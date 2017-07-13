@@ -19,7 +19,7 @@ public interface MsgHandler {
 	 * @param msgId 消息id，64位整型
 	 * @return boolean 是否自动回复了消息
 	 */
-	public boolean textMessage(String openid, int msgTime, String content, String msgId);
+	public String textMessage(String openid, int msgTime, String content, String msgId);
 
 	/**
 	 * 图片消息
@@ -30,7 +30,7 @@ public interface MsgHandler {
 	 * @param mediaId 图片消息媒体id，可以调用多媒体文件下载接口拉取数据
 	 * @param msgId 消息id，64位整型
 	 */
-	public void imageMessage(String openid, int msgTime, String picUrl, 
+	public String imageMessage(String openid, int msgTime, String picUrl,
 			String mediaId, String msgId);
 
 	/**
@@ -43,7 +43,7 @@ public interface MsgHandler {
 	 * @param msgId 消息id，64位整型
 	 * @param recognition 语音识别结果（开通语音识别功能的前提下）
 	 */
-	public void voiceMessage(String openid, int msgTime, String mediaId, 
+	public String voiceMessage(String openid, int msgTime, String mediaId,
 			String format, String msgId, String recognition);
 
 	/**
@@ -55,7 +55,7 @@ public interface MsgHandler {
 	 * @param thumbMediaId 视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据
 	 * @param msgId 消息id，64位整型
 	 */
-	public void videoMessage(String openid, int msgTime, String mediaId, 
+	public String videoMessage(String openid, int msgTime, String mediaId,
 			String thumbMediaId, String msgId);
 
 	/**
@@ -69,7 +69,7 @@ public interface MsgHandler {
 	 * @param label 地理位置信息
 	 * @param msgId 消息id，64位整型
 	 */
-	public void locationMessage(String openid, int msgTime, double longitude, 
+	public String locationMessage(String openid, int msgTime, double longitude,
 			double latitude, int scale, String label, String msgId);
 
 	/**
@@ -82,7 +82,7 @@ public interface MsgHandler {
 	 * @param url 消息链接
 	 * @param msgId 消息id，64位整型
 	 */
-	public void linkMessage(String openid, int msgTime, String title, 
+	public String linkMessage(String openid, int msgTime, String title,
 			String description, String url, String msgId);
 
 	/**
@@ -91,7 +91,7 @@ public interface MsgHandler {
 	 * @param openid 发送方帐号
 	 * @param msgTime 消息创建时间
 	 */
-	public void subscribeEvent(String openid, int msgTime);
+	public String subscribeEvent(String openid, int msgTime);
 
 	/**
 	 * 取消关注事件
@@ -99,7 +99,7 @@ public interface MsgHandler {
 	 * @param openid 发送方帐号
 	 * @param msgTime 消息创建时间
 	 */
-	public void unsubscribeEvent(String openid, int msgTime);
+	public String unsubscribeEvent(String openid, int msgTime);
 
 	/**
 	 * 扫描带参数二维码事件（用户未关注时，进行关注后的事件推送）
@@ -109,7 +109,7 @@ public interface MsgHandler {
 	 * @param eventKey 事件KEY值，qrscene_为前缀，后面为二维码的参数值。如qrscene_123123
 	 * @param ticket 二维码的ticket，可用来换取二维码图片
 	 */
-	public void subscribeQrEvent(String openid, int msgTime, String eventKey, String ticket);
+	public String subscribeQrEvent(String openid, int msgTime, String eventKey, String ticket);
 
 	/**
 	 * 扫描带参数二维码事件（用户已关注时的事件推送）
@@ -119,7 +119,7 @@ public interface MsgHandler {
 	 * @param eventKey 事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
 	 * @param ticket 二维码的ticket，可用来换取二维码图片
 	 */
-	public void scanEvent(String openid, int msgTime, String eventKey, String ticket);
+	public String scanEvent(String openid, int msgTime, String eventKey, String ticket);
 
 	/**
 	 * 上报地理位置事件
@@ -133,7 +133,7 @@ public interface MsgHandler {
 	 * @param latitude 地理位置纬度
 	 * @param precision 地理位置精度
 	 */
-	public void locationEvent(String openid, int msgTime, double longitude, 
+	public String locationEvent(String openid, int msgTime, double longitude,
 			double latitude, double precision);
 
 	/**
@@ -144,7 +144,7 @@ public interface MsgHandler {
 	 * @param msgTime 消息创建时间
 	 * @param eventKey 事件KEY值，与自定义菜单接口中KEY值对应
 	 */
-	public void clickEvent(String openid, int msgTime, String eventKey);
+	public String clickEvent(String openid, int msgTime, String eventKey);
 
 	/**
 	 * 点击菜单跳转链接时的事件推送
@@ -153,5 +153,5 @@ public interface MsgHandler {
 	 * @param msgTime 消息创建时间
 	 * @param eventKey 事件KEY值，设置的跳转URL
 	 */
-	public void viewEvent(String openid, int msgTime, String eventKey);
+	public String viewEvent(String openid, int msgTime, String eventKey);
 }

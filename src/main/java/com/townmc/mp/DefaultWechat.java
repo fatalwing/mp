@@ -2,7 +2,6 @@ package com.townmc.mp;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,129 +17,35 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 import com.townmc.mp.json.JSONArray;
 import com.townmc.mp.json.JSONObject;
 import com.townmc.mp.utils.MpUtils;
 
-public class DefaultWechat implements Wechat {
+abstract class DefaultWechat {
 	private static final Log log = LogFactory.getLog(DefaultWechat.class);
 
-	private static final int TOKEN_REFRESH_TIME = 1800000; // token刷新时间 半小时
-	private static final String GET_TOKEN = "https://api.weixin.qq.com/cgi-bin/token";
-	private static final String SEND_MSG = "https://api.weixin.qq.com/cgi-bin/message/custom/send";
-	private static final String GET_USER_INFO = "https://api.weixin.qq.com/cgi-bin/user/info";
-	private static final String GET_OPENID_BY_CODE = "https://api.weixin.qq.com/sns/oauth2/access_token";
-	private static final String GET_USER_LIST = "https://api.weixin.qq.com/cgi-bin/user/get";
-	private static final String CREATE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/create";
-	private static final String GET_MENU = "https://api.weixin.qq.com/cgi-bin/menu/get";
-	private static final String DELETE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/delete";
-	private static final String UPLOAD_MEDIA = "http://file.api.weixin.qq.com/cgi-bin/media/upload";
-	private static final String UPLOAD_NEWS = "https://api.weixin.qq.com/cgi-bin/media/uploadnews";
-	private static final String SEND_MEDIA_ADVANCED = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
-	private static final String CREATE_QRCODE = "https://api.weixin.qq.com/cgi-bin/qrcode/create";
-	private static final String SHOW_QRCODE = "https://mp.weixin.qq.com/cgi-bin/showqrcode";
-	private static final String SEND_TEMPLATE_MSG = "https://api.weixin.qq.com/cgi-bin/message/template/send";
-	private static final String SEND_API_ADD_TEMPLATE = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token={0}";
-	private static final String PAY_UNIFIEDORDER="https://api.mch.weixin.qq.com/pay/unifiedorder";
-	private static final String JSAPI_TICKET="https://api.weixin.qq.com/cgi-bin/ticket/getticket";
-	private static final String ORDER_QUERY="https://api.mch.weixin.qq.com/pay/orderquery";
-	private static final String RED_PACK="https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
+	public static final String GET_TOKEN = "https://api.weixin.qq.com/cgi-bin/token";
+	public static final String SEND_MSG = "https://api.weixin.qq.com/cgi-bin/message/custom/send";
+	public static final String GET_USER_INFO = "https://api.weixin.qq.com/cgi-bin/user/info";
+	public static final String GET_OPENID_BY_CODE = "https://api.weixin.qq.com/sns/oauth2/access_token";
+	public static final String GET_USER_LIST = "https://api.weixin.qq.com/cgi-bin/user/get";
+	public static final String CREATE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/create";
+	public static final String GET_MENU = "https://api.weixin.qq.com/cgi-bin/menu/get";
+	public static final String DELETE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/delete";
+	public static final String UPLOAD_MEDIA = "http://file.api.weixin.qq.com/cgi-bin/media/upload";
+	public static final String UPLOAD_NEWS = "https://api.weixin.qq.com/cgi-bin/media/uploadnews";
+	public static final String SEND_MEDIA_ADVANCED = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
+	public static final String CREATE_QRCODE = "https://api.weixin.qq.com/cgi-bin/qrcode/create";
+	public static final String SHOW_QRCODE = "https://mp.weixin.qq.com/cgi-bin/showqrcode";
+	public static final String SEND_TEMPLATE_MSG = "https://api.weixin.qq.com/cgi-bin/message/template/send";
+	public static final String SEND_API_ADD_TEMPLATE = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token={0}";
+	public static final String PAY_UNIFIEDORDER="https://api.mch.weixin.qq.com/pay/unifiedorder";
+	public static final String JSAPI_TICKET="https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+	public static final String ORDER_QUERY="https://api.mch.weixin.qq.com/pay/orderquery";
+	public static final String RED_PACK="https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
 	
-	private String appid;
-	private String secret;
-	
-	public String getAppid() {
-		return appid;
-	}
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-	public String getSecret() {
-		return secret;
-	}
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
-
-	private TokenManager tokenManager;
-	public void setTokenManager(TokenManager tokenManager) {
-		this.tokenManager = tokenManager;
-	}
-
-	public DefaultWechat(String appid, String secret) {
-		this.appid = appid;
-		this.secret = secret;
-	}
-	
-	/**
-	 * 获得app_id
-	 * @return
-	 */
-	public String getWechatAppId() {
-		return this.getAppid();
-	}
-	
-
-	/**
-	 * 获得component_app_id
-	 * @return
-	 */
-	public String getCompAppId() {
-		return null;
-	}
-
-	public String getCompAccessToken() {
-		return null;
-	}
-	
-	/**
-	 * 获得access_token，与微信接口交互的凭证
-	 * @return
-	 */
-	public String getAccessToken() {
-		Token token = tokenManager.get(this.appid);
-		
-		// 如果token超过定义的刷新的时间了，重新获取
-		if(null == token || null == token.getAccessToken() || "".equals(token.getAccessToken()) || 
-				System.currentTimeMillis() - token.getUpdateTime().getTime() > TOKEN_REFRESH_TIME) {
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("grant_type", "client_credential");
-			params.put("appid", this.appid.trim());
-			params.put("secret", this.secret.trim());
-			
-			log.debug("get access token form weixin. appid:" + this.appid + ". secret:" + this.secret);
-
-			Http http = new Http();
-			String responseStr = http.get(GET_TOKEN, params);
-			http.close();
-			
-			if (responseStr == null || "".equals(responseStr)) {
-				throw new MpException("get access token error! reson: responseStr is null, check secret space in tipdianka and dianka db?");
-			}
-			
-			JSONObject json = new JSONObject(responseStr);
-			
-			if(!json.isNull("errcode")) {
-				System.out.println("getAccessTokenResult="+json.toString());
-				throw new MpException("get access token error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
-			}
-			
-			String tokenValue = json.getString("access_token");
-			token = new Token();
-			token.setAppid(this.appid);
-			token.setAccessToken(tokenValue);
-			token.setUpdateTime(new Date());
-			int expiresIn = json.getInt("expires_in");
-			token.setExpireTime(new Date(System.currentTimeMillis() + expiresIn*1000));
-			
-			tokenManager.toStorage(token);
-			
-		}
-
-		return token.getAccessToken();
-	}
+	protected abstract String getAccessToken();
 
 	/**
 	 * 给某个用户发送文本消息
@@ -219,7 +124,7 @@ public class DefaultWechat implements Wechat {
 		http.post(SEND_MSG + "?access_token=" + this.getAccessToken(), json.toString());
 		
 	}
-	
+
 	/**
 	 * 获取用户基本信息
 	 * @param openid 用户的openid
@@ -238,12 +143,12 @@ public class DefaultWechat implements Wechat {
 		http.close();
 
 		JSONObject json = new JSONObject(responseStr);
-		
+
 		if(!json.isNull("errcode") && 0 != json.getInt("errcode")) {
 			throw new MpException("get user info error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
 		}
 		int subscribe = json.getInt("subscribe");
-		
+
 		MpUser user = new MpUser();
 		user.setSubscribe(subscribe);
 		user.setOpenid(json.getString("openid"));
@@ -256,42 +161,11 @@ public class DefaultWechat implements Wechat {
 			user.setProvince(json.getString("province"));
 			user.setSex(json.getInt("sex"));
 			user.setSubscribeTime(json.getInt("subscribe_time"));
-			user.setUnionid(json.getString("unionid"));
+			user.setUnionid((!json.isNull("unionid")) ? json.getString("unionid") : "");
 			user.setRemark(json.getString("remark"));
 			user.setGroupid(String.valueOf(json.getInt("groupid")));
 		}
 		return user;
-	}
-
-	/**
-	 * 通过code换取openid
-	 * @param code 微信网页回调地址是携带的code参数
-	 * @return
-	 */
-	public String getOpenidByCode(String code) {
-		if(null == code) {
-			throw new MpException("parameter code is null!");
-		}
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("appid", this.appid.trim());
-		params.put("secret", this.secret.trim());
-		params.put("code", code);
-		params.put("grant_type", "authorization_code");
-
-		Http http = new Http();
-		String responseStr = http.get(GET_OPENID_BY_CODE, params);
-
-		JSONObject json = new JSONObject(responseStr);
-		
-		if(!json.isNull("errcode") && 0 != json.getInt("errcode")) {
-			throw new MpException("get user info error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
-		}
-		
-		String openid = json.getString("openid");
-		
-		log.debug("get openid by code. code:" + code + ". openid:" + openid);
-		
-		return openid;
 	}
 
 	/**
@@ -328,26 +202,7 @@ public class DefaultWechat implements Wechat {
 		list.setOpenids(openids);
 		return list;
 	}
-	
-	/**
-	 * 微信第三方平台跳转
-	 * 
-	 * @param redirectUrl
-	 * @param state
-	 * @param componentAppid
-	 * @return
-	 */
-	public String redirectUrl(String redirectUrl, String state, String componentAppid) {
-		System.out.println("redirectUrl");
-		String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s&component_appid=%s#wechat_redirect";
-		try {
-			redirectUrl = URLEncoder.encode(redirectUrl,"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return String.format(url, this.appid, redirectUrl, "snsapi_base", state, componentAppid);
-	}
-	
+
 	public void createMenu(List<Menu> menus) {
 		if(null == menus || menus.size() == 0) {
 			throw new MpException("parameter menus is null!");
@@ -457,9 +312,10 @@ public class DefaultWechat implements Wechat {
 				String content = root.elementText("Content");
 				String msgId = root.elementText("MsgId");
 
-				boolean isAutoReply = handler.textMessage(openid, msgTime, content, msgId);
+				String resp = handler.textMessage(openid, msgTime, content, msgId);
 				re.put("Content", content);
-				re.put("isAutoReply", isAutoReply);
+				re.put("isAutoReply", false);
+				re.put("ReplyContent", resp);
 
 			} else if("image".equals(msgType)) {
 
@@ -467,7 +323,8 @@ public class DefaultWechat implements Wechat {
 				String mediaId = root.elementText("MediaId");
 				String msgId = root.elementText("MsgId");
 
-				handler.imageMessage(openid, msgTime, picUrl, mediaId, msgId);
+				String resp = handler.imageMessage(openid, msgTime, picUrl, mediaId, msgId);
+				re.put("ReplyContent", resp);
 
 				re.put("PicUrl", picUrl);
 				re.put("MediaId", mediaId);
@@ -480,7 +337,8 @@ public class DefaultWechat implements Wechat {
 				String msgId = root.elementText("MsgId");
 				String recognition = root.elementText("Recognition");
 				log.debug("=========== voice is : " + recognition + " ============");
-				handler.voiceMessage(openid, msgTime, mediaId, format, msgId, recognition);
+				String resp = handler.voiceMessage(openid, msgTime, mediaId, format, msgId, recognition);
+				re.put("ReplyContent", resp);
 
 				re.put("MediaId", mediaId);
 				re.put("Format", format);
@@ -491,7 +349,8 @@ public class DefaultWechat implements Wechat {
 				String thumbMediaId = root.elementText("ThumbMediaId");
 				String msgId = root.elementText("MsgId");
 
-				handler.videoMessage(openid, msgTime, mediaId, thumbMediaId, msgId);
+				String resp = handler.videoMessage(openid, msgTime, mediaId, thumbMediaId, msgId);
+				re.put("ReplyContent", resp);
 
 				re.put("MediaId", mediaId);
 				re.put("ThumbMediaId", thumbMediaId);
@@ -504,7 +363,8 @@ public class DefaultWechat implements Wechat {
 				String label = root.elementText("Label");
 				String msgId = root.elementText("MsgId");
 
-				handler.locationMessage(openid, msgTime, longitude, latitude, scale, label, msgId);
+				String resp = handler.locationMessage(openid, msgTime, longitude, latitude, scale, label, msgId);
+				re.put("ReplyContent", resp);
 
 				re.put("Location_Y", longitude);
 				re.put("Location_X", latitude);
@@ -518,7 +378,8 @@ public class DefaultWechat implements Wechat {
 				String url = root.elementText("Url");
 				String msgId = root.elementText("MsgId");
 
-				handler.linkMessage(openid, msgTime, title, description, url, msgId);
+				String resp = handler.linkMessage(openid, msgTime, title, description, url, msgId);
+				re.put("ReplyContent", resp);
 
 				re.put("Title", title);
 				re.put("Description", description);
@@ -538,11 +399,13 @@ public class DefaultWechat implements Wechat {
 
 						String ticket = root.elementText("Ticket");
 						re.put("Ticket", ticket);
-						handler.subscribeQrEvent(openid, msgTime, eventKey, ticket);
+						String resp = handler.subscribeQrEvent(openid, msgTime, eventKey, ticket);
+						re.put("ReplyContent", resp);
 
 					} else {
 
-						handler.subscribeEvent(openid, msgTime);
+						String resp = handler.subscribeEvent(openid, msgTime);
+						re.put("ReplyContent", resp);
 
 					}
 				} else if("unsubscribe".equals(event)) {
@@ -556,7 +419,8 @@ public class DefaultWechat implements Wechat {
 					re.put("EventKey", eventKey);
 					re.put("Ticket", ticket);
 
-					handler.scanEvent(openid, msgTime, eventKey, ticket);
+					String resp = handler.scanEvent(openid, msgTime, eventKey, ticket);
+					re.put("ReplyContent", resp);
 
 				} else if("LOCATION".equals(event)) {
 
@@ -567,21 +431,24 @@ public class DefaultWechat implements Wechat {
 					re.put("Longitude", longitude);
 					re.put("Precision", precision);
 
-					handler.locationEvent(openid, msgTime, longitude, latitude, precision);
+					String resp = handler.locationEvent(openid, msgTime, longitude, latitude, precision);
+					re.put("ReplyContent", resp);
 
 				} else if("CLICK".equals(event)) {
 
 					String eventKey = root.elementText("EventKey");
 					re.put("EventKey", eventKey);
 
-					handler.clickEvent(openid, msgTime, eventKey);
+					String resp = handler.clickEvent(openid, msgTime, eventKey);
+					re.put("ReplyContent", resp);
 
 				} else if("VIEW".equals(event)) {
 
 					String eventKey = root.elementText("EventKey");
 					re.put("EventKey", eventKey);
 
-					handler.viewEvent(openid, msgTime, eventKey);
+					String resp = handler.viewEvent(openid, msgTime, eventKey);
+					re.put("ReplyContent", resp);
 
 				}
 			}
@@ -595,7 +462,8 @@ public class DefaultWechat implements Wechat {
 	public String uploadMedia(String type, File file) {
 		String url = UPLOAD_MEDIA + "?access_token=" + this.getAccessToken() + "&type=" + type;
 
-		String re = HTTP.uploadFile(url, file);
+		Http http = new Http();
+		String re = http.uploadFile(url, file);
 		
 		if(null != re) {
 			JSONObject json = new JSONObject(re);
@@ -779,7 +647,7 @@ public class DefaultWechat implements Wechat {
 		}
 		
 		JSONObject json = new JSONObject().put("touser", openid).put("template_id", templateId).put("url", jumpUrl).put("topcolor", "#FF0000").put("data", dataObj);
-		System.out.println(json.toString());
+		log.debug(json.toString());
 
 		Http http = new Http();
 		String result = http.post(SEND_TEMPLATE_MSG + "?access_token=" + this.getAccessToken(), json.toString());
@@ -796,7 +664,6 @@ public class DefaultWechat implements Wechat {
 			throw new MpException("send trmplate msg error!");
 		}
 	}
-	
 
 	/**
 	 * 统一下单获取prepay_id
@@ -827,34 +694,33 @@ public class DefaultWechat implements Wechat {
 		}
 		log.debug("payStr:"+payStr);
 		String accessToken = this.getAccessToken();
-		String re = HTTPS.post(PAY_UNIFIEDORDER + "?access_token=" + accessToken, payStr);
-		
+		Http http = new Http();
+		String re = http.post(PAY_UNIFIEDORDER + "?access_token=" + accessToken, payStr);
+
 		if(null != re) {
-		  Map<String, Object> reMap = MpUtils.parse(re);
-		  if(!"SUCCESS".equals(reMap.get("return_code"))){
-			  throw new MpException("failed to get prepay_id!", "return_code=" + reMap.get("return_code"));
-		  }else if("签名失败".equals(reMap.get("return_msg"))){
-			  throw new MpException("sign failed from unifiedOrder!");
-		  }else if("XML格式错误".equals(reMap.get("return_msg"))){
-			  throw new MpException("incorrect XML format");
-		  }
-		  long timeStamp = new Date().getTime();
-		  Map<String, Object> signMap = new HashMap<String, Object>();
-				  signMap.put("appId", reMap.get("appid"));
-				  signMap.put("timeStamp", timeStamp);
-				  signMap.put("nonceStr", reMap.get("nonce_str"));
-				  signMap.put("package", "prepay_id="+reMap.get("prepay_id"));
-				  signMap.put("signType", "MD5");
-			String[] paySignStr = new String[]{"appId","timeStamp","nonceStr","package","signType"};	  
+			Map<String, Object> reMap = MpUtils.parse(re);
+			if(!"SUCCESS".equals(reMap.get("return_code"))){
+				throw new MpException("failed to get prepay_id!", "return_code=" + reMap.get("return_code") + ". return_msg:" + reMap.get("return_msg"));
+			}else if(!"SUCCESS".equals(reMap.get("result_code"))){
+				throw new MpException("failed to get prepay_id!" + ". err_code_des:" + reMap.get("err_code_des"));
+			}
+			long timeStamp = new Date().getTime();
+			Map<String, Object> signMap = new HashMap<String, Object>();
+			signMap.put("appId", reMap.get("appid"));
+			signMap.put("timeStamp", timeStamp);
+			signMap.put("nonceStr", reMap.get("nonce_str"));
+			signMap.put("package", "prepay_id="+reMap.get("prepay_id"));
+			signMap.put("signType", "MD5");
+			String[] paySignStr = new String[]{"appId","timeStamp","nonceStr","package","signType"};
 			String paySign = MpUtils.getSign(signMap, paySignStr, key);
-			
+
 			reMap.put("timeStamp", timeStamp);
 			reMap.put("paySign", paySign);
-		  return reMap;
-		  }
+			return reMap;
+		}
 		return null;
 	}
-	
+
 	/**
 	 * jsSDK签名
 	 * @return
@@ -869,13 +735,13 @@ public class DefaultWechat implements Wechat {
 						+ reJson.getInt("errcode") + ". "
 						+ reJson.getString("errmsg"));
 			}
-			System.out.println("jsticket:"+re);
+			log.debug("jsticket:"+re);
 			return reJson.getString("ticket");
 		} else {
 			throw new MpException("send trmplate msg error!");
 		}
 	}
-	
+
 	public Map<String, Object> queryOrder(OrderQuery orderQuery, String key) {
 		if(orderQuery.getAppid()==null||orderQuery.getMch_id()==null) throw new MpException("param_error", "some params could not be null!");
 		String nonceStr = MpUtils.getNonceStr();
@@ -897,48 +763,46 @@ public class DefaultWechat implements Wechat {
 		Http http = new Http();
 		String re = http.post(ORDER_QUERY+ "?access_token=" +this.getAccessToken(), orderStr);
 		if(null != re) {
-			  Map<String, Object> reMap = MpUtils.parse(re);
-			  if(!"SUCCESS".equals(reMap.get("return_code"))){
-				  throw new MpException("failed to get prepay_id!");
-			  }else if("签名失败".equals(reMap.get("return_msg"))){
-				  throw new MpException("sign failed from unifiedOrder!");
-			  }else if("XML格式错误".equals(reMap.get("return_msg"))){
-				  throw new MpException("incorrect XML format");
-			  }
-			  Map<String, Object> returnMap = new HashMap<String, Object>();
-			  returnMap.put("return_code", reMap.get("return_code"));
-			  returnMap.put("result_code", reMap.get("result_code"));
-			  returnMap.put("return_msg", reMap.get("return_msg"));
-			  if("SUCCESS".equals(reMap.get("return_code"))&&!"SUCCESS".equals(reMap.get("result_code"))){
-				  returnMap.put("appid", reMap.get("appid"));
-				  returnMap.put("mch_id", reMap.get("mch_id"));
-				  returnMap.put("nonce_str", reMap.get("nonce_str"));
-				  returnMap.put("sign", reMap.get("sign"));
-				  returnMap.put("result_code", reMap.get("result_code"));
-				  returnMap.put("err_code", reMap.get("err_code"));
-				  returnMap.put("err_code_des", reMap.get("err_code_des"));
-			  }
-			  if("SUCCESS".equals(reMap.get("return_code"))&&"SUCCESS".equals(reMap.get("result_code"))){
-				  returnMap.put("device_info", reMap.get("device_info"));
-				  returnMap.put("openid", reMap.get("openid"));
-				  returnMap.put("is_subscribe", reMap.get("is_subscribe"));
-				  returnMap.put("trade_type", reMap.get("trade_type"));
-				  returnMap.put("trade_state", reMap.get("trade_state"));
-				  returnMap.put("bank_type", reMap.get("bank_type"));
-				  returnMap.put("total_fee", reMap.get("total_fee"));
-				  returnMap.put("fee_type", reMap.get("fee_type"));
-				  returnMap.put("cash_fee", reMap.get("cash_fee"));
-				  returnMap.put("cash_fee_type", reMap.get("cash_fee_type"));
-				  returnMap.put("coupon_fee", reMap.get("coupon_fee"));
-				  returnMap.put("coupon_count", reMap.get("coupon_count"));
-				  returnMap.put("transaction_id", reMap.get("transaction_id"));
-				  returnMap.put("out_trade_no", reMap.get("out_trade_no"));
-				  returnMap.put("attach", reMap.get("attach"));
-				  returnMap.put("time_end", reMap.get("time_end"));
-				  returnMap.put("trade_state_desc", reMap.get("trade_state_desc"));
-			  }
-			  return returnMap;
-	  }
+			Map<String, Object> reMap = MpUtils.parse(re);
+			if(!"SUCCESS".equals(reMap.get("return_code"))){
+				throw new MpException("failed to get prepay_id!" + ". return_msg:" + reMap.get("return_msg"));
+			}else if(!"SUCCESS".equals(reMap.get("result_code"))){
+				throw new MpException("failed to get prepay_id!" + ". err_code_des:" + reMap.get("err_code_des"));
+			}
+			Map<String, Object> returnMap = new HashMap<String, Object>();
+			returnMap.put("return_code", reMap.get("return_code"));
+			returnMap.put("result_code", reMap.get("result_code"));
+			returnMap.put("return_msg", reMap.get("return_msg"));
+			if("SUCCESS".equals(reMap.get("return_code"))&&!"SUCCESS".equals(reMap.get("result_code"))){
+				returnMap.put("appid", reMap.get("appid"));
+				returnMap.put("mch_id", reMap.get("mch_id"));
+				returnMap.put("nonce_str", reMap.get("nonce_str"));
+				returnMap.put("sign", reMap.get("sign"));
+				returnMap.put("result_code", reMap.get("result_code"));
+				returnMap.put("err_code", reMap.get("err_code"));
+				returnMap.put("err_code_des", reMap.get("err_code_des"));
+			}
+			if("SUCCESS".equals(reMap.get("return_code"))&&"SUCCESS".equals(reMap.get("result_code"))){
+				returnMap.put("device_info", reMap.get("device_info"));
+				returnMap.put("openid", reMap.get("openid"));
+				returnMap.put("is_subscribe", reMap.get("is_subscribe"));
+				returnMap.put("trade_type", reMap.get("trade_type"));
+				returnMap.put("trade_state", reMap.get("trade_state"));
+				returnMap.put("bank_type", reMap.get("bank_type"));
+				returnMap.put("total_fee", reMap.get("total_fee"));
+				returnMap.put("fee_type", reMap.get("fee_type"));
+				returnMap.put("cash_fee", reMap.get("cash_fee"));
+				returnMap.put("cash_fee_type", reMap.get("cash_fee_type"));
+				returnMap.put("coupon_fee", reMap.get("coupon_fee"));
+				returnMap.put("coupon_count", reMap.get("coupon_count"));
+				returnMap.put("transaction_id", reMap.get("transaction_id"));
+				returnMap.put("out_trade_no", reMap.get("out_trade_no"));
+				returnMap.put("attach", reMap.get("attach"));
+				returnMap.put("time_end", reMap.get("time_end"));
+				returnMap.put("trade_state_desc", reMap.get("trade_state_desc"));
+			}
+			return returnMap;
+		}
 		return null;
 	}
 
@@ -959,15 +823,16 @@ public class DefaultWechat implements Wechat {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		System.out.println("redPackStr:"+redPackStr);
+		log.debug("redPackStr:"+redPackStr);
 		String accessToken = this.getAccessToken();
 		String re = "";
 		try {
-			re = HTTPS.postWithCer(RED_PACK + "?access_token=" + accessToken, redPackStr, keyFile,  keyPassWord);
+			Http http = new Http();
+			re = http.postWithCer(RED_PACK + "?access_token=" + accessToken, redPackStr, keyFile,  keyPassWord);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("sendRedPack return:"+re);
+		log.debug("sendRedPack return:"+re);
 		if(null != re) {
 			  Map<String, Object> reMap = MpUtils.parse(re);
 //			  if(!"SUCCESS".equals(reMap.get("return_code"))){
@@ -1008,7 +873,7 @@ public class DefaultWechat implements Wechat {
 			String nonceStr = MpUtils.getNonceStr();
 			refund.setNonce_str(nonceStr);
 			refundStr = MpUtils.getPayXmlStr(refund, apiKey);
-			System.out.println("refundStr:" + refundStr);
+			log.debug("refundStr:" + refundStr);
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -1022,16 +887,26 @@ public class DefaultWechat implements Wechat {
 		}
 		String re = "";
 		try {
-			re = HTTPS.postWithCer("https://api.mch.weixin.qq.com/secapi/pay/refund?access_token=" + accessToken, refundStr, keyFile, keyPassWord);
+			Http http = new Http();
+			re = http.postWithCer("https://api.mch.weixin.qq.com/secapi/pay/refund?access_token=" + accessToken, refundStr, keyFile, keyPassWord);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(re);
+		log.debug(re);
 
 		if (null != re) {
 			Map reMap = MpUtils.parse(re);
 			return reMap;
 		}
 		return null;
+	}
+
+	private boolean isAutoResponse(String txt) {
+		txt = txt.trim();
+		if(txt.startsWith("<xml>") && txt.endsWith("</xml>")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

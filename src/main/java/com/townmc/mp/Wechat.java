@@ -9,13 +9,11 @@ import com.townmc.mp.model.*;
 
 public interface Wechat {
 
-	public enum MsgType {image, voice, video}
-	
 	/**
 	 * 获得app_id
 	 * @return
 	 */
-	public String getWechatAppId();
+	public String getAppId();
 	
 	/**
 	 * 获得component_app_id
