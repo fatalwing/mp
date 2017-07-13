@@ -10,30 +10,6 @@ import com.townmc.mp.model.*;
 public interface Wechat {
 
 	/**
-	 * 获得app_id
-	 * @return
-	 */
-	public String getAppId();
-	
-	/**
-	 * 获得component_app_id
-	 * @return
-	 */
-	public String getCompAppId();
-
-	/**
-	 * 获得component_access_token
-	 * @return
-	 */
-	public String getCompAccessToken();
-	
-	/**
-	 * 获得access_token，与微信接口交互的凭证
-	 * @return
-	 */
-	public String getAccessToken();
-	
-	/**
 	 * 给某个用户发送文本消息
 	 * @param openid 消息接收者的openid
 	 * @param text 文本消息内容

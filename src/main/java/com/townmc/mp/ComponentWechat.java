@@ -26,22 +26,6 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 	private String componentAppid;
 	private String componentAccessToken;
 
-	public String getAppId() {
-		return appId;
-	}
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public String getComponentAppid() {
-		return componentAppid;
-	}
-
-	public String getComponentAccessToken() {
-		return componentAccessToken;
-	}
-
 	public ComponentWechat(String appid, String accessToken, String componentAppid, String componentAccessToken) {
 		this.appId = appId;
 		this.accessToken = accessToken;
@@ -49,24 +33,8 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 		this.componentAccessToken = componentAccessToken;
 	}
 
-	/**
-	 * 获得app_id
-	 * @return
-	 */
-	public String getWechatAppId() {
-		return this.getAppId();
-	}
-
-	/**
-	 * 获得component_app_id
-	 * @return
-	 */
-	public String getCompAppId() {
-		return this.getComponentAppid();
-	}
-
-	public String getCompAccessToken() {
-		return this.getComponentAccessToken();
+	public String getAccessToken() {
+		return accessToken;
 	}
 
 	/**

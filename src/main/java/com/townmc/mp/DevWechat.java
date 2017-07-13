@@ -30,22 +30,6 @@ public class DevWechat extends DefaultWechat implements Wechat {
         this.tokenManager = tokenManage;
     }
 
-    public String getAppId() {
-        return appId;
-    }
-
-    /**
-     * 获得component_app_id
-     * @return
-     */
-    public String getCompAppId() {
-        return null;
-    }
-
-    public String getCompAccessToken() {
-        return null;
-    }
-
     /**
      * 获得access_token，与微信接口交互的凭证
      * @return
@@ -93,16 +77,6 @@ public class DevWechat extends DefaultWechat implements Wechat {
         return token.getAccessToken();
     }
 
-    public String redirectUrl(String redirectUrl, String state, String placeholder) {
-        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
-        try {
-            redirectUrl = URLEncoder.encode(redirectUrl,"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return String.format(url, this.appId, redirectUrl, "snsapi_base", state);
-    }
-
     /**
      * 通过code换取openid
      * @param code 微信网页回调地址是携带的code参数
@@ -132,6 +106,16 @@ public class DevWechat extends DefaultWechat implements Wechat {
         log.debug("get openid by code. code:" + code + ". openid:" + openid);
 
         return openid;
+    }
+
+    public String redirectUrl(String redirectUrl, String state, String placeholder) {
+        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
+        try {
+            redirectUrl = URLEncoder.encode(redirectUrl,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return String.format(url, this.appId, redirectUrl, "snsapi_base", state);
     }
 
 }
