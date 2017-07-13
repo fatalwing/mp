@@ -291,6 +291,7 @@ abstract class DefaultWechat {
 	 * 	isAutoReply (当消息类型为文本时)
 	 */
 	public Map<String, Object> receiveMsg(String msgXml, MsgHandler handler) {
+		log.debug("receive msg : " + msgXml);
 		Map<String, Object> re = new HashMap<String, Object>();
 		try {
 			Document doc = DocumentHelper.parseText(msgXml);
