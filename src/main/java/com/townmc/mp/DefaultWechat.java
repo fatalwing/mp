@@ -297,6 +297,7 @@ abstract class DefaultWechat {
 			Document doc = DocumentHelper.parseText(msgXml);
 
 			Element root = doc.getRootElement();
+			String encrypt = root.elementText("Encrypt");
 
 			String msgType = root.elementText("MsgType");
 			String openid = root.elementText("FromUserName");
