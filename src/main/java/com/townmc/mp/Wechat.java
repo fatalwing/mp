@@ -194,17 +194,37 @@ public interface Wechat {
 	public Map<String, Object> unifiedOrder(Unifiedorder unifiedorder, String key);
 	
 	/**
-	 * jsSDK签名
+	 * 获得jsSDK签名
 	 * @return
 	 */
-	public String getJsApiTicket(String accessToken);
-	
+	public String getJsApiTicket();
+
+	/**
+	 * 微信支付的订单查询
+	 * @param orderQuery
+	 * @param key 商户的key
+	 * @return
+	 */
 	public Map<String, Object> queryOrder(OrderQuery orderQuery, String key);
 	
 	public Map<String, Object> sendRedPack(RedPack redPack,String keyFile, String keyPassWord);
-	
+
+	/**
+	 * 获得调用jssdk的配置数据
+	 * @param appId
+	 * @param url
+	 * @return
+	 */
 	public Map<String, Object> getJsConfig(String appId,String url);
 
-	public Map<String, Object> refund(Refund refund, String accessToken, String keyFile, String keyPassWord, String apiKey);
+	/**
+	 * 微信支付退款
+	 * @param refund
+	 * @param keyFile
+	 * @param keyPassWord
+	 * @param apiKey 商户的key
+	 * @return
+	 */
+	public Map<String, Object> refund(Refund refund, String keyFile, String keyPassWord, String apiKey);
 	
 }

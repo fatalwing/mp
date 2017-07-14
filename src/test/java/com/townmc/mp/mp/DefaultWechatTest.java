@@ -10,34 +10,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.townmc.mp.DevWechat;
+import com.townmc.mp.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.townmc.mp.DefaultWechat;
 import com.townmc.mp.TokenManager;
 import com.townmc.mp.Wechat;
-import com.townmc.mp.model.AdvancedArticle;
-import com.townmc.mp.model.Article;
-import com.townmc.mp.model.Menu;
-import com.townmc.mp.model.Token;
-import com.townmc.mp.model.MpUser;
-import com.townmc.mp.model.MpUserList;
 
 /**
  * Unit test for DefaultWechat.
  */
 public class DefaultWechatTest {
-	private DefaultWechat wechat;
+	private Wechat wechat;
 	
 	//@Before
 	public void init() {
-		wechat = new DefaultWechat("wx938cf8cc98af75d4", "ac3127d511e0b6e43341cd1bd54ad0ac");
-//		wechat = new DefaultWechat("wxfdbf277961c37911", "8e0cb639bf70c7b6a2897ac927e384bc");
-		wechat.setTokenManager(new TokenManager() {
+		wechat = new DevWechat("wx938cf8cc98af75d4", "ac3127d511e0b6e43341cd1bd54ad0ac", new TokenManager() {
 			public void toStorage(Token token) {
 				//
 			}
-			
+
 			public Token get(String appid) {
 				Token token = new Token();
 				token.setAppid("wx938cf8cc98af75d4");
@@ -47,15 +40,9 @@ public class DefaultWechatTest {
 				return null;
 			}
 		});
-		
+//		wechat = new DefaultWechat("wxfdbf277961c37911", "8e0cb639bf70c7b6a2897ac927e384bc");
 	}
-	
-	//@Test
-	public void getAccessTokenTest() {
-		String tokenStr = wechat.getAccessToken();
-		System.out.println(tokenStr);
-	}
-	
+
 	//@Test
 	public void sendTextMsgTest() {
 		wechat.sendTextMsg("b5c65283d6b14ac2b4991371eaa062f7", "��ã�����");
@@ -160,7 +147,7 @@ public class DefaultWechatTest {
 	
 	//@Test
 	public void sedMediaMsgTest() {
-		wechat.sendMediaMsg("o2FJ5jsz0F5nI50EUaMYxCzfVFFM", Wechat.MsgType.image, "789X2RilxEVpe17cPCft88Gb7weD3_6dJ3ptArSP4w9H0b1bTFwB5XM5bfjGrJFm");
+		wechat.sendMediaMsg("o2FJ5jsz0F5nI50EUaMYxCzfVFFM", MsgType.image, "789X2RilxEVpe17cPCft88Gb7weD3_6dJ3ptArSP4w9H0b1bTFwB5XM5bfjGrJFm");
 	}
 	
 	//@Test

@@ -775,9 +775,9 @@ abstract class DefaultWechat {
 	 * jsSDK签名
 	 * @return
 	 */
-	public String getJsApiTicket(String accessToken){
+	public String getJsApiTicket(){
 		Http http = new Http();
-		String re = http.get(JSAPI_TICKET+ "?access_token=" + accessToken+"&type=jsapi");
+		String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi");
 		if (null != re) {
 			JSONObject reJson = new JSONObject(re);
 			if (!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
@@ -895,7 +895,7 @@ abstract class DefaultWechat {
 	
 	public Map<String, Object> getJsConfig(String appId,String url) {
 		String nonceStr = MpUtils.getNonceStr();
-		String ticket = this.getJsApiTicket(this.getAccessToken());
+		String ticket = this.getJsApiTicket();
 		long timeStamp = new Date().getTime()/1000; //这里的时间戳是秒级的，而java中默认是毫秒级的
 		String[] signStr = new String[4];
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -917,7 +917,7 @@ abstract class DefaultWechat {
 		return re;
 	}
 
-	public Map<String, Object> refund(Refund refund, String accessToken, String keyFile, String keyPassWord, String apiKey) {
+	public Map<String, Object> refund(Refund refund, String keyFile, String keyPassWord, String apiKey) {
 		String refundStr = null;
 		try {
 			String nonceStr = MpUtils.getNonceStr();
@@ -938,7 +938,7 @@ abstract class DefaultWechat {
 		String re = "";
 		try {
 			Http http = new Http();
-			re = http.postWithCer("https://api.mch.weixin.qq.com/secapi/pay/refund?access_token=" + accessToken, refundStr, keyFile, keyPassWord);
+			re = http.postWithCer("https://api.mch.weixin.qq.com/secapi/pay/refund?access_token=" + this.getAccessToken(), refundStr, keyFile, keyPassWord);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
