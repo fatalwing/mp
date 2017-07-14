@@ -137,6 +137,13 @@ public interface Wechat {
 	 * @return ticket
 	 */
 	public String createQrCode(int sceneId);
+
+	/**
+	 * 创建参数的永久二维码tiket
+	 * @param sceneStr 扫描关注事件返回的eventKey
+	 * @return ticket
+	 */
+	public String createQrCode(String sceneStr);
 	
 	/**
 	 * 创建带参数的临时性二维码ticket
@@ -145,6 +152,14 @@ public interface Wechat {
 	 * @return ticket
 	 */
 	public String createExpireQrCode(int sceneId, int expireSeconds);
+
+	/**
+	 * 创建带参数的临时性二维码ticket
+	 * @param sceneStr 扫描关注事件返回的eventKey
+	 * @param expireSeconds 该二维码有效时间，以秒为单位。 最大不超过1800
+	 * @return ticket
+	 */
+	public String createExpireQrCode(String sceneStr, int expireSeconds);
 	
 	/**
 	 * 通过ticket获得二维码展示地址

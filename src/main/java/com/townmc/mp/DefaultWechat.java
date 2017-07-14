@@ -567,6 +567,30 @@ abstract class DefaultWechat {
 			throw new MpException("upload news error!");
 		}
 	}
+
+	/**
+	 * 创建参数的永久二维码
+	 * @param sceneStr 场景值ID，场景值ID（字符串形式的ID），字符串类型，长度限制为1到64
+	 * @return
+	 */
+	public String createQrCode(String sceneStr) {
+
+		JSONObject json = new JSONObject().put("action_name", "QR_LIMIT_STR_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_str", sceneStr)));
+
+		Http http = new Http();
+		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
+		http.close();
+
+		if(null != re) {
+			JSONObject reJson = new JSONObject(re);
+			if(!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
+				throw new MpException("upload news error! reson: " + reJson.getInt("errcode") + ". " + reJson.getString("errmsg"));
+			}
+			return reJson.getString("ticket");
+		} else {
+			throw new MpException("upload news error!");
+		}
+	}
 	
 	/**
 	 * 创建带参数的临时性二维码
@@ -576,6 +600,30 @@ abstract class DefaultWechat {
 	 */
 	public String createExpireQrCode(int sceneId, int expireSeconds) {
 		JSONObject json = new JSONObject().put("expire_seconds", expireSeconds).put("action_name", "QR_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_id", sceneId)));
+
+		Http http = new Http();
+		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
+		http.close();
+
+		if(null != re) {
+			JSONObject reJson = new JSONObject(re);
+			if(!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
+				throw new MpException("upload news error! reson: " + reJson.getInt("errcode") + ". " + reJson.getString("errmsg"));
+			}
+			return reJson.getString("ticket");
+		} else {
+			throw new MpException("upload news error!");
+		}
+	}
+
+	/**
+	 * 创建带参数的临时性二维码
+	 * @param sceneStr 场景值ID，场景值ID（字符串形式的ID），字符串类型，长度限制为1到64
+	 * @param expireSeconds 该二维码有效时间，以秒为单位。 最大不超过1800
+	 * @return
+	 */
+	public String createExpireQrCode(String sceneStr, int expireSeconds) {
+		JSONObject json = new JSONObject().put("expire_seconds", expireSeconds).put("action_name", "QR_STR_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_str", sceneStr)));
 
 		Http http = new Http();
 		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
