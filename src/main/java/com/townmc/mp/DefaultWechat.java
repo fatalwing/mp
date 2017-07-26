@@ -33,8 +33,8 @@ abstract class DefaultWechat {
 	public static final String CREATE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/create";
 	public static final String GET_MENU = "https://api.weixin.qq.com/cgi-bin/menu/get";
 	public static final String DELETE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/delete";
-	public static final String UPLOAD_MEDIA = "http://file.api.weixin.qq.com/cgi-bin/media/upload";
-	public static final String UPLOAD_NEWS = "https://api.weixin.qq.com/cgi-bin/media/uploadnews";
+	public static final String UPLOAD_MEDIA = "https://api.weixin.qq.com/cgi-bin/material/add_material";
+	public static final String UPLOAD_NEWS = "https://api.weixin.qq.com/cgi-bin/material/add_news";
 	public static final String SEND_MEDIA_ADVANCED = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
 	public static final String CREATE_QRCODE = "https://api.weixin.qq.com/cgi-bin/qrcode/create";
 	public static final String SHOW_QRCODE = "https://mp.weixin.qq.com/cgi-bin/showqrcode";
@@ -465,7 +465,7 @@ abstract class DefaultWechat {
 		String url = UPLOAD_MEDIA + "?access_token=" + this.getAccessToken() + "&type=" + type;
 
 		Http http = new Http();
-		String re = http.uploadFile(url, file);
+		String re = http.uploadFile(url, "media", file);
 		
 		if(null != re) {
 			JSONObject json = new JSONObject(re);

@@ -72,10 +72,9 @@ public interface Wechat {
 	 * 
 	 * @param redirectUrl
 	 * @param state
-	 * @param componentAppid
 	 * @return
 	 */
-	public String redirectUrl(String redirectUrl, String state, String componentAppid);
+	public String redirectUrl(String redirectUrl, String state);
 	
 	/**
 	 * 创建自定义菜单

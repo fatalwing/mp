@@ -21,13 +21,13 @@ import java.util.*;
 public class ComponentWechat extends DefaultWechat implements Wechat {
 	private static final Log log = LogFactory.getLog(ComponentWechat.class);
 
-	private String appId;
+	private String appid;
 	private String accessToken;
 	private String componentAppid;
 	private String componentAccessToken;
 
 	public ComponentWechat(String appid, String accessToken, String componentAppid, String componentAccessToken) {
-		this.appId = appId;
+		this.appid = appid;
 		this.accessToken = accessToken;
 		this.componentAppid = componentAppid;
 		this.componentAccessToken = componentAccessToken;
@@ -43,7 +43,7 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 	 * @return
 	 */
 	public String getOpenidByCode(String code) {
-		Map<String, Object> re = Component.getAccessTokenByCode(componentAppid, appId, code, componentAccessToken);
+		Map<String, Object> re = Component.getAccessTokenByCode(componentAppid, appid, code, componentAccessToken);
 
 		log.debug("get openid by code. code:" + code + ". openid:" + re.get("openid"));
 
@@ -55,10 +55,9 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 	 *
 	 * @param redirectUrl
 	 * @param state
-	 * @param componentAppid
 	 * @return
 	 */
-	public String redirectUrl(String redirectUrl, String state, String componentAppid) {
+	public String redirectUrl(String redirectUrl, String state) {
 		log.debug("redirectUrl");
 		String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s&component_appid=%s#wechat_redirect";
 		try {
@@ -66,7 +65,7 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		return String.format(url, this.appId, redirectUrl, "snsapi_base", state, componentAppid);
+		return String.format(url, this.appid, redirectUrl, "snsapi_base", state, this.componentAppid);
 	}
 
 }

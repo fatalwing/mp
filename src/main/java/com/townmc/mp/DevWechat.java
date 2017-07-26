@@ -108,7 +108,7 @@ public class DevWechat extends DefaultWechat implements Wechat {
         return openid;
     }
 
-    public String redirectUrl(String redirectUrl, String state, String placeholder) {
+    public String redirectUrl(String redirectUrl, String state) {
         String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
         try {
             redirectUrl = URLEncoder.encode(redirectUrl,"UTF-8");
