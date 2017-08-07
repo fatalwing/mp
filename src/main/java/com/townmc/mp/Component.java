@@ -30,6 +30,7 @@ public class Component {
     private static final String API_QUERY_AUTH_URL = "https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token={0}";
     private static final String API_AUTHORIZER_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token={0}";
     private static final String GET_ACCESSTOKEN_BY_CODE_URL = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid={0}&code={1}&grant_type=authorization_code&component_appid={2}&component_access_token={3}";
+    private static final String JSCODE2SESSION_URL = "https://api.weixin.qq.com/sns/component/jscode2session?appid={0}&js_code={1}&grant_type=authorization_code&component_appid={2}&component_access_token={3}";
 
     /**
      * 1. 在公众号第三方平台创建审核通过后，微信服务器会向其“授权事件接收URL”每隔10分钟定时推送component_verify_ticket <br />
@@ -280,6 +281,37 @@ public class Component {
         result.put("refresh_token", refreshToken);
         result.put("openid", openid);
         result.put("scope", scope);
+
+        return result;
+    }
+
+    /**
+     * 第三方平台代替小程序实现登录,使用登录凭证 code 以及第三方平台的component_access_token 获取 session_key 和 openid
+     * @param componentAppid
+     * @param authorizerAppid
+     * @param code
+     * @param componentAccessToken
+     * @return
+     */
+    public static Map<String, Object> jscode2session(String componentAppid, String authorizerAppid, String code,
+                                                     String componentAccessToken) {
+
+        String url = MessageFormat.format(JSCODE2SESSION_URL, authorizerAppid, code, componentAppid, componentAccessToken);
+        Http http = new Http();
+        String re = http.get(url);
+        http.close();
+        log.debug("==== jscode2session response : " + re);
+        JSONObject reJson = new JSONObject(re);
+        if(!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
+            throw new MpException("component_access_error", reJson.getInt("errcode") + "." + reJson.getString("errmsg"));
+        }
+
+        String openid = reJson.getString("openid");
+        String sessionKey = reJson.getString("session_key");
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("openid", openid);
+        result.put("session_key", sessionKey);
 
         return result;
     }
