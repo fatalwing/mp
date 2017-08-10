@@ -6,6 +6,7 @@ import com.townmc.mp.aes.WXBizMsgCrypt;
 import com.townmc.mp.json.JSONArray;
 import com.townmc.mp.json.JSONObject;
 import com.townmc.utils.Http;
+import com.townmc.utils.JsonUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -31,6 +32,7 @@ public class Component {
     private static final String API_AUTHORIZER_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token={0}";
     private static final String GET_ACCESSTOKEN_BY_CODE_URL = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid={0}&code={1}&grant_type=authorization_code&component_appid={2}&component_access_token={3}";
     private static final String JSCODE2SESSION_URL = "https://api.weixin.qq.com/sns/component/jscode2session?appid={0}&js_code={1}&grant_type=authorization_code&component_appid={2}&component_access_token={3}";
+    private static final String API_GET_AUTHORIZER_INFOl_URL = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token={0}";
 
     /**
      * 1. 在公众号第三方平台创建审核通过后，微信服务器会向其“授权事件接收URL”每隔10分钟定时推送component_verify_ticket <br />
@@ -254,7 +256,7 @@ public class Component {
      * @param authorizerAppid
      * @param code
      * @param componentAccessToken
-     * @return
+     * @return Map {"access_token":"expires_in",0:"refresh_token","openid":"","":"scope"}
      */
     public static Map<String, Object> getAccessTokenByCode(String componentAppid, String authorizerAppid, String code,
                                                            String componentAccessToken) {
@@ -314,6 +316,26 @@ public class Component {
         result.put("session_key", sessionKey);
 
         return result;
+    }
+
+    /**
+     * 获取授权方的帐号基本信息，公众号获取
+     * @param componentAppid
+     * @param authorizerAppid
+     * @param componentAccessToken
+     * @return Map
+     *
+     */
+    public static Map<String, Object> apiGetAuthorizerInfo(String componentAppid, String authorizerAppid,
+                                                           String componentAccessToken) {
+        String url = MessageFormat.format(API_GET_AUTHORIZER_INFOl_URL, componentAccessToken);
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("component_appid", componentAppid);
+        param.put("authorizer_appid", authorizerAppid);
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
     }
 
 }
