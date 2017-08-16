@@ -333,8 +333,11 @@ public class Component {
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("component_appid", componentAppid);
         param.put("authorizer_appid", authorizerAppid);
+
         Http http = new Http();
         String resp = http.post(url, JsonUtil.object2Json(param));
+        log.debug("==== apiGetAuthorizerInfo response : " + resp);
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
