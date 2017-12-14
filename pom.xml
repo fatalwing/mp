@@ -4,7 +4,7 @@
 
 	<groupId>com.townmc</groupId>
 	<artifactId>mp</artifactId>
-	<version>3.10</version>
+	<version>3.11</version>
 	<packaging>jar</packaging>
 
 	<name>mp</name>
