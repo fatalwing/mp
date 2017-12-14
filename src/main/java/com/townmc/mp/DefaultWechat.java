@@ -687,11 +687,11 @@ abstract class DefaultWechat {
 		JSONObject dataObj = new JSONObject();
 		for(int i = 0; i < paramList.size(); i++) {
 			TemplateParam templateParam = paramList.get(i);
-			String color = templateParam.getParamKeyColor();
+			String color = templateParam.getColor();
 			dataObj.put(
-					templateParam.getParamKeyName(),
+					templateParam.getKey(),
 					new JSONObject().put("value",
-							templateParam.getParamKeyValue()).put("color",
+							templateParam.getValue()).put("color",
 							(color == null) ? "#173177" : color));
 
 		}

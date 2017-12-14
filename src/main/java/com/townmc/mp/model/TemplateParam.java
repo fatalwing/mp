@@ -3,33 +3,34 @@ package com.townmc.mp.model;
 import java.io.Serializable;
 
 public class TemplateParam implements Serializable {
+
+	private String key; //参数名称
+	private String value; //参数值
+	private String color; //参数颜色
 	
 	public TemplateParam(String key, String value, String color) {
-		this.paramKeyName = key;
-		this.paramKeyValue = value;
-		if (color == null || "".equals(color)) this.paramKeyColor = "#173177";
-		else this.paramKeyColor = color;
+		this.key = key;
+		this.value = value;
+		if (color == null || "".equals(color)) this.color = "#173177";
+		else this.color = color;
 	}
 
-	private String paramKeyName; //参数名称
-	private String paramKeyValue; //参数值
-	private String paramKeyColor; //参数颜色
-	public String getParamKeyName() {
-		return paramKeyName;
+	public String getKey() {
+		return key;
 	}
-	public void setParamKeyName(String paramKeyName) {
-		this.paramKeyName = paramKeyName;
+	public void setKey(String key) {
+		this.key = key;
 	}
-	public String getParamKeyValue() {
-		return paramKeyValue;
+	public String getValue() {
+		return value;
 	}
-	public void setParamKeyValue(String paramKeyValue) {
-		this.paramKeyValue = paramKeyValue;
+	public void setValue(String value) {
+		this.value = value;
 	}
-	public String getParamKeyColor() {
-		return paramKeyColor;
+	public String getColor() {
+		return color;
 	}
-	public void setParamKeyColor(String paramKeyColor) {
-		this.paramKeyColor = paramKeyColor;
+	public void setColor(String color) {
+		this.color = color;
 	}
 }
