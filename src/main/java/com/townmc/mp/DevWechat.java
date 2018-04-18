@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 提供给开发者模式时使用
  * Created by meng on 2017/7/13.
  */
 public class DevWechat extends DefaultWechat implements Wechat {

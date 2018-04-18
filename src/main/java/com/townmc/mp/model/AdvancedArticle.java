@@ -1,5 +1,8 @@
 package com.townmc.mp.model;
 
+/**
+ * 图文消息实体类
+ */
 public class AdvancedArticle {
 	
 	public static final int SHOW_COVER_PIC_YES = 1;

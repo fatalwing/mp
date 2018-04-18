@@ -22,6 +22,10 @@ import com.townmc.mp.json.JSONArray;
 import com.townmc.mp.json.JSONObject;
 import com.townmc.mp.utils.MpUtils;
 
+/**
+ * 微信公众交互功能，包括获得token，发消息等等
+ * 公众号有两种开发模式，一种是开发者模式，一种是第三方授权开发模式。因此本类抽象公用功能，两种模式决定的差异用具体的DevWechat和ComponentWechat实现。
+ */
 abstract class DefaultWechat {
 	private static final Log log = LogFactory.getLog(DefaultWechat.class);
 

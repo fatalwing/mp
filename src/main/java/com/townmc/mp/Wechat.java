@@ -7,6 +7,9 @@ import java.util.Map;
 
 import com.townmc.mp.model.*;
 
+/**
+ * 微信公众号功能接口
+ */
 public interface Wechat {
 
 	/**

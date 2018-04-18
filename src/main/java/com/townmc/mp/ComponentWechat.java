@@ -18,6 +18,9 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.*;
 
+/**
+ * 提供给第三方开发者模式时使用
+ */
 public class ComponentWechat extends DefaultWechat implements Wechat {
 	private static final Log log = LogFactory.getLog(ComponentWechat.class);
 
