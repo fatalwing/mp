@@ -27,6 +27,11 @@ public class Wxapp {
     private static final String GET_LATEST_AUDITS_TATUS_URL = "https://api.weixin.qq.com/wxa/get_latest_auditstatus?access_token={0}";
     private static final String RELEASE_URL = "https://api.weixin.qq.com/wxa/release?access_token={0}";
     private static final String CHANGE_VISITSTATUS_URL = "https://api.weixin.qq.com/wxa/change_visitstatus?access_token={0}";
+    private static final String LIST_TEMPLATE_MSG_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/library/list?access_token={0}";
+    private static final String GET_TEMPLATE_MSG_INFO_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/library/get?access_token={0}";
+    private static final String ADD_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/add?access_token={0}";
+    private static final String LIST_EXISTS_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/list?access_token={0}"; //获取帐号下已存在的模板列表
+    private static final String DEL_EXISTS_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/del?access_token={0}"; //删除帐号下的某个模板
 
     /**
      * 修改服务器地址
@@ -212,6 +217,133 @@ public class Wxapp {
         String url = MessageFormat.format(CHANGE_VISITSTATUS_URL, authorizerAccessToken);
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("action", action);
+
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
+    }
+
+    /**
+     * 获取小程序模板库标题列表
+     * @param authorizerAccessToken
+     * @param offset
+     * @param count
+     * @return
+     * {
+     *   "errcode":0,
+     *   "errmsg":"ok",
+     *   "list":[
+     *      {"id":"AT0002","title":"购买成功通知"}
+     *   ]
+     * }
+     */
+    public static Map<String, Object> listTemplateMsg(String authorizerAccessToken, int offset, int count) {
+        String url = MessageFormat.format(LIST_TEMPLATE_MSG_URL, authorizerAccessToken);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("offset", offset);
+        param.put("count", count);
+
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
+    }
+
+    /**
+     * 获取模板库某个模板标题下关键词库
+     * @param authorizerAccessToken
+     * @param tplId
+     * @return
+     * {
+     *   "errcode": 0,
+     *   "errmsg": "ok",
+     *   "id": "AT0002",
+     *   "title": "购买成功通知",
+     *   "keyword_list": [
+     *      {
+     *      "keyword_id": 3,
+     *      "name": "购买地点",
+     *      "example": "TIT造舰厂"
+     *      }
+     *   ]
+     * }
+     */
+    public static Map<String, Object> getTemplateMsgInfo(String authorizerAccessToken, String tplId) {
+        String url = MessageFormat.format(GET_TEMPLATE_MSG_INFO_URL, authorizerAccessToken);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("id", tplId);
+
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
+    }
+
+    /**
+     * 组合模板并添加至帐号下的个人模板库
+     * @param authorizerAccessToken
+     * @param tplId
+     * @param keyIdList
+     * @return
+     * {
+     *   "errcode": 0,
+     *   "errmsg": "ok",
+     *   "template_id": "wDYzYZVxobJivW9oMpSCpuvACOfJXQIoKUm0PY397Tc"
+     * }
+     */
+    public static Map<String, Object> addTemplate(String authorizerAccessToken, String tplId, String[] keyIdList) {
+        String url = MessageFormat.format(ADD_TEMPLATE_URL, authorizerAccessToken);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("id", tplId);
+        param.put("keyword_id_list", keyIdList);
+
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
+    }
+
+    /**
+     * 获取帐号下已存在的模板列表
+     * @param authorizerAccessToken
+     * @param offset
+     * @param count
+     * @return
+     *   {
+     *      "errcode": 0,
+     *      "errmsg": "ok",
+     *      "list": [
+     *          {
+     *          "template_id": "wDYzYZVxobJivW9oMpSCpuvACOfJXQIoKUm0PY397Tc",
+     *          "title": "购买成功通知",
+     *          "content": "购买地点{{keyword1.DATA}}\n购买时间{{keyword2.DATA}}\n物品名称{{keyword3.DATA}}\n",
+     *          "example": "购买地点：TIT造舰厂\n购买时间：2016年6月6日\n物品名称：咖啡\n"
+     *          }
+     *      ]
+     *  }
+     */
+    public static Map<String, Object> listExistsTemplate(String authorizerAccessToken, int offset, int count) {
+        String url = MessageFormat.format(LIST_EXISTS_TEMPLATE_URL, authorizerAccessToken);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("offset", offset);
+        param.put("count", count);
+
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
+    }
+
+    /**
+     * 删除帐号下的某个模板
+     * @param authorizerAccessToken
+     * @param tplMsgId
+     * @return
+     *   {
+     *       "errcode":0,
+     *       "errmsg":"ok"
+     *   }
+     */
+    public static Map<String, Object> delExistsTemplate(String authorizerAccessToken, String tplMsgId) {
+        String url = MessageFormat.format(DEL_EXISTS_TEMPLATE_URL, authorizerAccessToken);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("template_id", tplMsgId);
 
         Http http = new Http();
         String resp = http.post(url, JsonUtil.object2Json(param));
