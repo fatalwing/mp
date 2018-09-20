@@ -289,7 +289,7 @@ public class Wxapp {
      *   "template_id": "wDYzYZVxobJivW9oMpSCpuvACOfJXQIoKUm0PY397Tc"
      * }
      */
-    public static Map<String, Object> addTemplate(String authorizerAccessToken, String tplId, String[] keyIdList) {
+    public static Map<String, Object> addTemplate(String authorizerAccessToken, String tplId, int[] keyIdList) {
         String url = MessageFormat.format(ADD_TEMPLATE_URL, authorizerAccessToken);
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("id", tplId);
