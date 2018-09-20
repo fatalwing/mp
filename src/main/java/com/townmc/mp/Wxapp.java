@@ -32,6 +32,7 @@ public class Wxapp {
     private static final String ADD_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/add?access_token={0}";
     private static final String LIST_EXISTS_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/list?access_token={0}"; //获取帐号下已存在的模板列表
     private static final String DEL_EXISTS_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/del?access_token={0}"; //删除帐号下的某个模板
+    private static final String SEND_TEMPLATE_MSG_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={0}";
 
     /**
      * 修改服务器地址
@@ -294,6 +295,39 @@ public class Wxapp {
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("id", tplId);
         param.put("keyword_id_list", keyIdList);
+
+        Http http = new Http();
+        String resp = http.post(url, JsonUtil.object2Json(param));
+        return JsonUtil.json2Object(resp, Map.class);
+    }
+
+    /**
+     * 发送模板消息
+     * @param authorizerAccessToken
+     * @param openid
+     * @param tplMsgId
+     * @param page 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
+     * @param formId 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
+     * @param params 模板内容，不填则下发空模板
+     * @param emphasisKeyword 模板需要放大的关键词，不填则默认无放大
+     * @return
+     */
+    public static Map<String, Object> sendTemplateMsg(String authorizerAccessToken, String openid, String tplMsgId, String page,
+                                                      String formId, Map<String, Object> params, String emphasisKeyword) {
+        String url = MessageFormat.format(SEND_TEMPLATE_MSG_URL, authorizerAccessToken);
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("touser", openid);
+        param.put("template_id", tplMsgId);
+        param.put("page", page);
+        param.put("form_id", formId);
+        Map<String, Object> data = new HashMap<String, Object>();
+        params.forEach((key, value) -> {
+            Map<String, Object> field = new HashMap<String, Object>();
+            field.put("value", value);
+            data.put(key, field);
+        });
+        param.put("data", data);
+        param.put("emphasis_keyword", emphasisKeyword);
 
         Http http = new Http();
         String resp = http.post(url, JsonUtil.object2Json(param));
