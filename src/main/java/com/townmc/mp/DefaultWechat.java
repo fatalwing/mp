@@ -709,13 +709,13 @@ abstract class DefaultWechat {
 		if (null != result) {
 			JSONObject reJson = new JSONObject(result);
 			if (!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
-				throw new MpException("send trmplate msg error! reson: "
+				throw new MpException("send template msg error! reson: "
 						+ reJson.getInt("errcode") + ". "
 						+ reJson.getString("errmsg"));
 			}
 			return true;
 		} else {
-			throw new MpException("send trmplate msg error!");
+			throw new MpException("send template msg error!");
 		}
 	}
 
