@@ -24,7 +24,6 @@ import java.util.*;
 public class ComponentWechat extends DefaultWechat implements Wechat {
 	private static final Log log = LogFactory.getLog(ComponentWechat.class);
 
-	private String appid;
 	private String accessToken;
 	private String componentAppid;
 	private String componentAccessToken;
@@ -46,7 +45,7 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 	 * @return
 	 */
 	public String getOpenidByCode(String code) {
-		Map<String, Object> re = Component.getAccessTokenByCode(componentAppid, appid, code, componentAccessToken);
+		Map<String, Object> re = Component.getAccessTokenByCode(componentAppid, this.appid, code, componentAccessToken);
 
 		log.debug("get openid by code. code:" + code + ". openid:" + re.get("openid"));
 

@@ -311,6 +311,11 @@ public class Wxapp {
      * @param params 模板内容，不填则下发空模板
      * @param emphasisKeyword 模板需要放大的关键词，不填则默认无放大
      * @return
+     *   {
+     *       "errcode": 0,
+     *       "errmsg": "ok",
+     *       "template_id": "wDYzYZVxobJivW9oMpSCpuvACOfJXQIoKUm0PY397Tc"
+     *   }
      */
     public static Map<String, Object> sendTemplateMsg(String authorizerAccessToken, String openid, String tplMsgId, String page,
                                                       String formId, Map<String, Object> params, String emphasisKeyword) {

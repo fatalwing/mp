@@ -202,6 +202,16 @@ public interface Wechat {
 	public String getJsApiTicket();
 
 	/**
+	 * 获得试用JS-SDK页面需要注入的配置信息
+	 * 所有需要使用JS-SDK的页面必须先注入配置信息，否则将无法调用。
+	 * @param debug 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+	 * @param jsApiList 需要使用的JS接口列表
+	 * @param url 当前网页的URL，不包含#及其后面部分
+	 * @return
+	 */
+	public Map<String, Object> getJsConfig(Boolean debug, String[] jsApiList, String url);
+
+	/**
 	 * 微信支付的订单查询
 	 * @param orderQuery
 	 * @param key 商户的key
@@ -210,14 +220,6 @@ public interface Wechat {
 	public Map<String, Object> queryOrder(OrderQuery orderQuery, String key);
 	
 	public Map<String, Object> sendRedPack(RedPack redPack,String keyFile, String keyPassWord);
-
-	/**
-	 * 获得调用jssdk的配置数据
-	 * @param appId
-	 * @param url
-	 * @return
-	 */
-	public Map<String, Object> getJsConfig(String appId,String url);
 
 	/**
 	 * 微信支付退款

@@ -21,12 +21,11 @@ public class DevWechat extends DefaultWechat implements Wechat {
 
     private static final int TOKEN_REFRESH_TIME = 1800000; // token刷新时间 半小时
 
-    private String appId;
     private String secret;
     private TokenManager tokenManager;
 
     public DevWechat(String appId, String secret, TokenManager tokenManage) {
-        this.appId = appId;
+        this.appid = appId;
         this.secret = secret;
         this.tokenManager = tokenManage;
     }
@@ -36,17 +35,17 @@ public class DevWechat extends DefaultWechat implements Wechat {
      * @return
      */
     public String getAccessToken() {
-        Token token = tokenManager.get(this.appId);
+        Token token = tokenManager.get(this.appid);
 
         // 如果token超过定义的刷新的时间了，重新获取
         if(null == token || null == token.getAccessToken() || "".equals(token.getAccessToken()) ||
                 System.currentTimeMillis() - token.getUpdateTime().getTime() > TOKEN_REFRESH_TIME) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("grant_type", "client_credential");
-            params.put("appid", this.appId.trim());
+            params.put("appid", this.appid.trim());
             params.put("secret", this.secret.trim());
 
-            log.debug("get access token form weixin. appid:" + this.appId + ". secret:" + this.secret);
+            log.debug("get access token form weixin. appid:" + this.appid + ". secret:" + this.secret);
 
             Http http = new Http();
             String responseStr = http.get(GET_TOKEN, params);
@@ -65,7 +64,7 @@ public class DevWechat extends DefaultWechat implements Wechat {
 
             String tokenValue = json.getString("access_token");
             token = new Token();
-            token.setAppid(this.appId);
+            token.setAppid(this.appid);
             token.setAccessToken(tokenValue);
             token.setUpdateTime(new Date());
             int expiresIn = json.getInt("expires_in");
@@ -88,7 +87,7 @@ public class DevWechat extends DefaultWechat implements Wechat {
             throw new MpException("parameter code is null!");
         }
         Map<String, String> params = new HashMap<String, String>();
-        params.put("appid", this.appId.trim());
+        params.put("appid", this.appid.trim());
         params.put("secret", this.secret.trim());
         params.put("code", code);
         params.put("grant_type", "authorization_code");
@@ -116,7 +115,7 @@ public class DevWechat extends DefaultWechat implements Wechat {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return String.format(url, this.appId, redirectUrl, "snsapi_base", state);
+        return String.format(url, this.appid, redirectUrl, "snsapi_base", state);
     }
 
 }

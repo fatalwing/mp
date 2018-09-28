@@ -48,7 +48,9 @@ abstract class DefaultWechat {
 	public static final String JSAPI_TICKET="https://api.weixin.qq.com/cgi-bin/ticket/getticket";
 	public static final String ORDER_QUERY="https://api.mch.weixin.qq.com/pay/orderquery";
 	public static final String RED_PACK="https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
-	
+
+	protected String appid;
+
 	protected abstract String getAccessToken();
 
 	/**
@@ -796,6 +798,44 @@ abstract class DefaultWechat {
 		}
 	}
 
+	/**
+	 * 获得试用JS-SDK页面需要注入的配置信息
+	 * 所有需要使用JS-SDK的页面必须先注入配置信息，否则将无法调用。
+	 * @param debug 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+	 * @param jsApiList 需要使用的JS接口列表
+	 * @param url 当前网页的URL，不包含#及其后面部分
+	 * @return
+	 */
+	public Map<String, Object> getJsConfig(Boolean debug, String[] jsApiList, String url) {
+		String nonceStr = MpUtils.getNonceStr();
+		String ticket = this.getJsApiTicket();
+		long timeStamp = new Date().getTime()/1000; //这里的时间戳是秒级的，而java中默认是毫秒级的
+		String[] signStr = new String[4];
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("jsapi_ticket", ticket);
+		map.put("noncestr", nonceStr);
+		map.put("timestamp", timeStamp);
+		map.put("url", url);
+		signStr[0] = "jsapi_ticket";
+		signStr[1] = "noncestr";
+		signStr[2] = "timestamp";
+		signStr[3] = "url";
+		String signature = MpUtils.getSha1Sign(map, signStr, null);
+
+		Map<String, Object> re = new HashMap<String, Object>();
+		if(null != debug) {
+			debug = false;
+		}
+		re.put("debug", debug);
+		re.put("appId", this.appid);
+		re.put("timestamp", timeStamp);
+		re.put("nonceStr", nonceStr);
+		re.put("signature", signature.toLowerCase());
+		re.put("jsApiList", jsApiList);
+
+		return re;
+	}
+
 	public Map<String, Object> queryOrder(OrderQuery orderQuery, String key) {
 		if(orderQuery.getAppid()==null||orderQuery.getMch_id()==null) throw new MpException("param_error", "some params could not be null!");
 		String nonceStr = MpUtils.getNonceStr();
@@ -895,30 +935,6 @@ abstract class DefaultWechat {
 			  return reMap;
 		}
 		return null;
-	}
-	
-	public Map<String, Object> getJsConfig(String appId,String url) {
-		String nonceStr = MpUtils.getNonceStr();
-		String ticket = this.getJsApiTicket();
-		long timeStamp = new Date().getTime()/1000; //这里的时间戳是秒级的，而java中默认是毫秒级的
-		String[] signStr = new String[4];
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("jsapi_ticket", ticket);
-		map.put("noncestr", nonceStr);
-		map.put("timestamp", timeStamp);
-		map.put("url", url);
-		signStr[0] = "jsapi_ticket";
-		signStr[1] = "noncestr";
-		signStr[2] = "timestamp";
-		signStr[3] = "url";
-		String signature = MpUtils.getSha1Sign(map, signStr, null);
-		
-		Map<String, Object> re = new HashMap<String, Object>();
-		re.put("appId", appId);
-		re.put("timestamp", timeStamp);
-		re.put("nonceStr", nonceStr);
-		re.put("signature", signature.toLowerCase());
-		return re;
 	}
 
 	public Map<String, Object> refund(Refund refund, String keyFile, String keyPassWord, String apiKey) {
