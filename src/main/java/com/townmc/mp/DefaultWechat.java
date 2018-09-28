@@ -823,8 +823,8 @@ abstract class DefaultWechat {
 		String signature = MpUtils.getSha1Sign(map, signStr, null);
 
 		Map<String, Object> re = new HashMap<String, Object>();
-		if(null != debug) {
-			debug = false;
+		if(null == debug) {
+			debug = true;
 		}
 		re.put("debug", debug);
 		re.put("appId", this.appid);
