@@ -3,14 +3,12 @@ package com.townmc.mp;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.townmc.mp.model.*;
+import com.townmc.utils.DateUtil;
 import com.townmc.utils.Http;
+import com.townmc.utils.StringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -50,6 +48,7 @@ abstract class DefaultWechat {
 	public static final String RED_PACK="https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
 
 	protected String appid;
+	protected TokenManager tokenManager;
 
 	protected abstract String getAccessToken();
 
@@ -782,20 +781,42 @@ abstract class DefaultWechat {
 	 * @return
 	 */
 	public String getJsApiTicket(){
-		Http http = new Http();
-		String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi");
-		if (null != re) {
-			JSONObject reJson = new JSONObject(re);
-			if (!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
-				throw new MpException("send trmplate msg error! reson: "
-						+ reJson.getInt("errcode") + ". "
-						+ reJson.getString("errmsg"));
-			}
-			log.debug("jsticket:"+re);
-			return reJson.getString("ticket");
-		} else {
-			throw new MpException("send trmplate msg error!");
+		if (null == tokenManager) {
+			throw new MpException("tokenManager_null", "获取jsApiTicket必须有tokenManager统一来管理ticket以及过期时间");
 		}
+		Token token = tokenManager.get(this.appid);
+
+		// 如果jsticket超过定义的刷新的时间了（1小时），重新获取
+		if(null == token || StringUtil.isBlank(token.getJsApiTicket()) ||
+				token.getJsApiTicketExpireTime().getTime() - System.currentTimeMillis() < 3600) {
+
+			Http http = new Http();
+			String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi");
+			if (null != re) {
+				JSONObject reJson = new JSONObject(re);
+				if (!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
+					throw new MpException("send trmplate msg error! reson: "
+							+ reJson.getInt("errcode") + ". "
+							+ reJson.getString("errmsg"));
+				}
+				log.debug("jsticket:"+re);
+				String jsApiTicket = reJson.getString("ticket");
+
+				if(null == token) token = new Token();
+				token.setAppid(this.appid);
+				token.setJsApiTicket(jsApiTicket);
+				token.setJsApiTicketExpireTime(DateUtil.rollDate(new Date(), Calendar.HOUR_OF_DAY, 2));
+
+				tokenManager.toStorage(token);
+			} else {
+				throw new MpException("send trmplate msg error!");
+			}
+
+		}
+
+		return token.getJsApiTicket();
+
+
 	}
 
 	/**

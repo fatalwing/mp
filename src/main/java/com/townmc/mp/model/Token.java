@@ -14,6 +14,8 @@ public class Token implements Serializable {
 	private String accessToken; // access_token的值
 	private Date updateTime; // 最后更新时间
 	private Date expireTime; // 到期时间
+	private String jsApiTicket;
+	private Date jsApiTicketExpireTime;
 
 	public String getAppid() {
 		return appid;
@@ -39,5 +41,20 @@ public class Token implements Serializable {
 	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
 	}
-	
+
+	public String getJsApiTicket() {
+		return jsApiTicket;
+	}
+
+	public void setJsApiTicket(String jsApiTicket) {
+		this.jsApiTicket = jsApiTicket;
+	}
+
+	public Date getJsApiTicketExpireTime() {
+		return jsApiTicketExpireTime;
+	}
+
+	public void setJsApiTicketExpireTime(Date jsApiTicketExpireTime) {
+		this.jsApiTicketExpireTime = jsApiTicketExpireTime;
+	}
 }

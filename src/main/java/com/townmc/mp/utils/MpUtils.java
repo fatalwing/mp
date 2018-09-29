@@ -109,13 +109,7 @@ public class MpUtils {
 		System.out.println("tempA:"+tempA);
 		return getSha1(tempA.toString());
 	}
-	public static void main(String[] args){
-		String aa = "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VD5s2KHl9B1a85vBaiPeXCWIfc5N-L8nAg32VCaeI592KG7eHbqpK0oEqmiPiVdHUQ&noncestr=DF12B17B33054493911887BE53453139&timestamp=1446620696&url=http://wx.qulianjie.net/card/card.html?merchantId=10011000002";
-		String bb = "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VD5s2KHl9B1a85vBaiPeXCWIfc5N-L8nAg32VCaeI592KG7eHbqpK0oEqmiPiVdHUQ&noncestr=DF12B17B33054493911887BE53453139&timestamp=1446620696454&url=http://wx.qulianjie.net/card/card.html?merchantId=10011000002";
-		System.out.println(getSha1(aa));
-		System.out.println(getSha1(bb));
-	}
-	
+
 	public static String getSha1(String content){
 		MessageDigest md = null;
         String tmpStr = null;
@@ -226,5 +220,13 @@ public class MpUtils {
 			e.printStackTrace();
 		}
         return null;
-    }  
+    }
+
+	public static void main(String[] args){
+		String aa = "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VD5s2KHl9B1a85vBaiPeXCWIfc5N-L8nAg32VCaeI592KG7eHbqpK0oEqmiPiVdHUQ&noncestr=DF12B17B33054493911887BE53453139&timestamp=1446620696&url=http://wx.qulianjie.net/card/card.html?merchantId=10011000002";
+		String bb = "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg&noncestr=Wm3WZYTPz0wzccnW&timestamp=1414587457&url=http://mp.weixin.qq.com?params=value";
+		System.out.println(getSha1(aa));
+		System.out.println(getSha1(bb));
+	}
+
 }

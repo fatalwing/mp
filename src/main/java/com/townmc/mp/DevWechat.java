@@ -22,7 +22,6 @@ public class DevWechat extends DefaultWechat implements Wechat {
     private static final int TOKEN_REFRESH_TIME = 1800000; // token刷新时间 半小时
 
     private String secret;
-    private TokenManager tokenManager;
 
     public DevWechat(String appId, String secret, TokenManager tokenManage) {
         this.appid = appId;

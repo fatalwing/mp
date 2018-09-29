@@ -35,6 +35,14 @@ public class ComponentWechat extends DefaultWechat implements Wechat {
 		this.componentAccessToken = componentAccessToken;
 	}
 
+	public ComponentWechat(String appid, String accessToken, String componentAppid, String componentAccessToken, TokenManager tokenManager) {
+		this.appid = appid;
+		this.accessToken = accessToken;
+		this.componentAppid = componentAppid;
+		this.componentAccessToken = componentAccessToken;
+		this.tokenManager = tokenManager;
+	}
+
 	public String getAccessToken() {
 		return accessToken;
 	}
