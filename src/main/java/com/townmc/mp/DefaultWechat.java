@@ -788,7 +788,7 @@ abstract class DefaultWechat {
 
 		// 如果jsticket超过定义的刷新的时间了（1小时），重新获取
 		if(null == token || StringUtil.isBlank(token.getJsApiTicket()) ||
-				token.getJsApiTicketExpireTime().getTime() - System.currentTimeMillis() < 3600) {
+				token.getJsApiTicketExpireTime().getTime() - System.currentTimeMillis() < 360000) {
 
 			Http http = new Http();
 			String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi");

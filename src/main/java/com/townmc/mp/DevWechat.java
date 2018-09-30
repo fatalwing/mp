@@ -19,8 +19,6 @@ import java.util.Map;
 public class DevWechat extends DefaultWechat implements Wechat {
     private static final Logger log = LoggerFactory.getLogger(DevWechat.class);
 
-    private static final int TOKEN_REFRESH_TIME = 1800000; // token刷新时间 半小时
-
     private String secret;
 
     public DevWechat(String appId, String secret, TokenManager tokenManage) {
@@ -38,7 +36,7 @@ public class DevWechat extends DefaultWechat implements Wechat {
 
         // 如果token超过定义的刷新的时间了，重新获取
         if(null == token || null == token.getAccessToken() || "".equals(token.getAccessToken()) ||
-                System.currentTimeMillis() - token.getUpdateTime().getTime() > TOKEN_REFRESH_TIME) {
+                token.getExpireTime().getTime() - System.currentTimeMillis() < 360000) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("grant_type", "client_credential");
             params.put("appid", this.appid.trim());
