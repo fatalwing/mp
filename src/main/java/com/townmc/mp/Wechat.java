@@ -48,6 +48,12 @@ public interface Wechat {
 	 * @param type
 	 */
 	public void sendMpNewsMsg(List<String> openids, String mediaId, String type);
+
+	/**
+	 * 获得微信接口访问凭证
+	 * @return
+	 */
+	public String getAccessToken();
 	
 	/**
 	 * 获取用户基本信息

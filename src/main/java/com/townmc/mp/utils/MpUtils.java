@@ -1,9 +1,6 @@
 package com.townmc.mp.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,24 +8,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.xml.sax.InputSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.townmc.mp.json.JSONObject;
-import com.townmc.mp.model.Unifiedorder;
 import com.townmc.mp.wxpay.common.XMLParser;
 
 public class MpUtils {
+	private static final Logger log = LoggerFactory.getLogger(MpUtils.class);
 
 	/**
 	 * md5加密
@@ -87,7 +79,7 @@ public class MpUtils {
 		}else{
 			tempA.delete(tempA.length()-1, tempA.length());
 		}
-		System.out.println("tempA:"+tempA);
+		log.debug("tempA:"+tempA);
 		return getMD5(tempA.toString()).toUpperCase();
 	}
 	
@@ -106,7 +98,7 @@ public class MpUtils {
 		}else{
 			tempA.delete(tempA.length()-1, tempA.length());
 		}
-		System.out.println("tempA:"+tempA);
+		log.debug("tempA:"+tempA);
 		return getSha1(tempA.toString());
 	}
 
@@ -221,12 +213,5 @@ public class MpUtils {
 		}
         return null;
     }
-
-	public static void main(String[] args){
-		String aa = "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VD5s2KHl9B1a85vBaiPeXCWIfc5N-L8nAg32VCaeI592KG7eHbqpK0oEqmiPiVdHUQ&noncestr=DF12B17B33054493911887BE53453139&timestamp=1446620696&url=http://wx.qulianjie.net/card/card.html?merchantId=10011000002";
-		String bb = "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg&noncestr=Wm3WZYTPz0wzccnW&timestamp=1414587457&url=http://mp.weixin.qq.com?params=value";
-		System.out.println(getSha1(aa));
-		System.out.println(getSha1(bb));
-	}
 
 }

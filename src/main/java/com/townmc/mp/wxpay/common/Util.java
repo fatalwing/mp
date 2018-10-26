@@ -102,7 +102,6 @@ public class Util {
      */
     public static String log(Object log){
         logger.i(log.toString());
-        //System.out.println(log);
         return log.toString();
     }
 

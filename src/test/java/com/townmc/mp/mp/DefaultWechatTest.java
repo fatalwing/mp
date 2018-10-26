@@ -17,11 +17,15 @@ import org.junit.Test;
 
 import com.townmc.mp.TokenManager;
 import com.townmc.mp.Wechat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Unit test for DefaultWechat.
  */
 public class DefaultWechatTest {
+	private static final Logger log = LoggerFactory.getLogger(DefaultWechatTest.class);
+	
 	private Wechat wechat;
 	
 	//@Before
@@ -64,33 +68,33 @@ public class DefaultWechatTest {
 	public void getUserTest() {
 		MpUser user = wechat.getUser("aoc4Grt7cMpH5eYbd2chyKGrx8bV0");
 		
-		System.out.println(user.getCity());
-		System.out.println(user.getCountry());
-		System.out.println(user.getHeadimgurl());
-		System.out.println(user.getLanguage());
-		System.out.println(user.getNickname());
-		System.out.println(user.getOpenid());
-		System.out.println(user.getProvince());
-		System.out.println(user.getSex());
-		System.out.println(user.getSubscribe());
-		System.out.println(user.getSubscribeTime());
+		log.info(user.getCity());
+		log.info(user.getCountry());
+		log.info(user.getHeadimgurl());
+		log.info(user.getLanguage());
+		log.info(user.getNickname());
+		log.info(user.getOpenid());
+		log.info(user.getProvince());
+		log.info("" + user.getSex());
+		log.info("" + user.getSubscribe());
+		log.info("" + user.getSubscribeTime());
 	}
 	
 	//@Test
 	public void redirectUrlTest() {
-		//System.out.println(wechat.redirectUrl("http://114.215.101.31/wechat/user/card", "mycard"));
+		//log.info(wechat.redirectUrl("http://114.215.101.31/wechat/user/card", "mycard"));
 	}
 	
 	//@Test
 	public void getUserListTest() {
 		MpUserList users = wechat.getUserList(null);
 		
-		System.out.println(users.getTotal());
-		System.out.println(users.getCount());
-		System.out.println(users.getNextOpenid());
+		log.info("" + users.getTotal());
+		log.info("" + users.getCount());
+		log.info(users.getNextOpenid());
 		
 		for(String openid : users.getOpenids()) {
-			System.out.println(openid);
+			log.info(openid);
 		}
 	}
 	
@@ -153,7 +157,7 @@ public class DefaultWechatTest {
 	//@Test
 	public void uploadMediaTest() {
 		String mediaId = wechat.uploadMedia("thumb", new File("D:/Pictures/nexusS/IMG_20120211_132647.jpg"));
-		System.out.println("upload media : " + mediaId);
+		log.info("upload media : " + mediaId);
 	}
 	
 	//@Test
@@ -170,7 +174,7 @@ public class DefaultWechatTest {
 		arts.add(a1);
 		
 		String mid = wechat.uploadNews(arts);
-		System.out.println(mid);
+		log.info(mid);
 	}
 	
 	//@Test
@@ -190,16 +194,16 @@ public class DefaultWechatTest {
 	//@Test
 	public void createQrCodeTest() {
 		String ticket = wechat.createQrCode(1);
-		System.out.println(ticket);
+		log.info(ticket);
 	}
 	
 	private void printMenu(List<Menu> menus) {
-		System.out.println("===========");
+		log.info("===========");
 		for(Menu m : menus) {
-			if(null != m.getType()) System.out.println("type:" + m.getType());
-			if(null != m.getName()) System.out.println("name:" + m.getName());
-			if(null != m.getKey()) System.out.println("key:" + m.getKey());
-			if(null != m.getUrl()) System.out.println("url:" + m.getUrl());
+			if(null != m.getType()) log.info("type:" + m.getType());
+			if(null != m.getName()) log.info("name:" + m.getName());
+			if(null != m.getKey()) log.info("key:" + m.getKey());
+			if(null != m.getUrl()) log.info("url:" + m.getUrl());
 			if(null != m.getSubButton()) this.printMenu(m.getSubButton());
 			
 		}

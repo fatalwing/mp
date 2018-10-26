@@ -50,7 +50,7 @@ abstract class DefaultWechat {
 	protected String appid;
 	protected TokenManager tokenManager;
 
-	protected abstract String getAccessToken();
+	public abstract String getAccessToken();
 
 	/**
 	 * 给某个用户发送文本消息
@@ -67,6 +67,7 @@ abstract class DefaultWechat {
 		text = text.replaceAll("/换行", "\n");
 		JSONObject json = new JSONObject().put("touser", openid).put("msgtype", "text").put("text", new JSONObject().put("content", text));
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		http.post(SEND_MSG + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 	}
@@ -99,6 +100,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("touser", openid).put("msgtype", mediaType.toString()).put(mediaType.toString(), new JSONObject().put("media_id", mediaId));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		http.post(SEND_MSG + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 	}
@@ -126,6 +128,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("touser", openid).put("msgtype", "news").put("news", new JSONObject().put("articles", arr));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		http.post(SEND_MSG + "?access_token=" + this.getAccessToken(), json.toString());
 		
 	}
@@ -144,6 +147,7 @@ abstract class DefaultWechat {
 		params.put("openid", openid);
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String responseStr = http.get(GET_USER_INFO, params);
 		http.close();
 
@@ -185,6 +189,7 @@ abstract class DefaultWechat {
 			params.put("next_openid", nextOpenid);
 		}
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String responseStr = http.get(GET_USER_LIST, params);
 
 		JSONObject json = new JSONObject(responseStr);
@@ -216,6 +221,7 @@ abstract class DefaultWechat {
 		JSONObject body = new JSONObject().put("button", new JSONArray(menus));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String response = http.post(CREATE_MENU + "?access_token=" + this.getAccessToken(), body.toString());
 		http.close();
 
@@ -230,6 +236,7 @@ abstract class DefaultWechat {
 		params.put("access_token", this.getAccessToken());
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String responseStr = http.get(GET_MENU, params);
 
 		JSONObject json = new JSONObject(responseStr);
@@ -275,6 +282,7 @@ abstract class DefaultWechat {
 		params.put("access_token", this.getAccessToken());
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String responseStr = http.get(DELETE_MENU, params);
 		http.close();
 
@@ -470,6 +478,7 @@ abstract class DefaultWechat {
 		String url = UPLOAD_MEDIA + "?access_token=" + this.getAccessToken() + "&type=" + type;
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.uploadFile(url, "media", file);
 		
 		if(null != re) {
@@ -501,6 +510,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("articles", arr);
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(UPLOAD_NEWS + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 
@@ -536,6 +546,7 @@ abstract class DefaultWechat {
 			 json = new JSONObject().put("touser", arr).put("mpnews", new JSONObject().put("media_id", mediaId)).put("msgtype", "mpnews");
 		}
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(SEND_MEDIA_ADVANCED + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 
@@ -559,6 +570,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("action_name", "QR_LIMIT_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_id", sceneId)));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 
@@ -583,6 +595,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("action_name", "QR_LIMIT_STR_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_str", sceneStr)));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 
@@ -607,6 +620,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("expire_seconds", expireSeconds).put("action_name", "QR_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_id", sceneId)));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 
@@ -631,6 +645,7 @@ abstract class DefaultWechat {
 		JSONObject json = new JSONObject().put("expire_seconds", expireSeconds).put("action_name", "QR_STR_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_str", sceneStr)));
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 
@@ -659,6 +674,7 @@ abstract class DefaultWechat {
 
 		String url = MessageFormat.format(SEND_API_ADD_TEMPLATE, this.getAccessToken());
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(url, json.toString());
 		http.close();
 
@@ -705,6 +721,7 @@ abstract class DefaultWechat {
 		log.debug(json.toString());
 
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String result = http.post(SEND_TEMPLATE_MSG + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 		if (null != result) {
@@ -750,6 +767,7 @@ abstract class DefaultWechat {
 		log.debug("payStr:"+payStr);
 		String accessToken = this.getAccessToken();
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(PAY_UNIFIEDORDER + "?access_token=" + accessToken, payStr);
 
 		if(null != re) {
@@ -791,6 +809,7 @@ abstract class DefaultWechat {
 				token.getJsApiTicketExpireTime().getTime() - System.currentTimeMillis() < 360000) {
 
 			Http http = new Http();
+			http.setTimeout(3000, 3000, 3000);
 			String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi");
 			if (null != re) {
 				JSONObject reJson = new JSONObject(re);
@@ -876,6 +895,7 @@ abstract class DefaultWechat {
 			e.printStackTrace();
 		}
 		Http http = new Http();
+		http.setTimeout(3000, 3000, 3000);
 		String re = http.post(ORDER_QUERY+ "?access_token=" +this.getAccessToken(), orderStr);
 		if(null != re) {
 			Map<String, Object> reMap = MpUtils.parse(re);
@@ -943,6 +963,7 @@ abstract class DefaultWechat {
 		String re = "";
 		try {
 			Http http = new Http();
+			http.setTimeout(3000, 3000, 3000);
 			re = http.postWithCer(RED_PACK + "?access_token=" + accessToken, redPackStr, keyFile,  keyPassWord);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -979,6 +1000,7 @@ abstract class DefaultWechat {
 		String re = "";
 		try {
 			Http http = new Http();
+			http.setTimeout(3000, 3000, 3000);
 			re = http.postWithCer("https://api.mch.weixin.qq.com/secapi/pay/refund?access_token=" + this.getAccessToken(), refundStr, keyFile, keyPassWord);
 		} catch (Exception e) {
 			e.printStackTrace();

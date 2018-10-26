@@ -22,6 +22,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 提供接收和推送给公众平台消息的加解密接口(UTF8编码的字符串).
@@ -39,6 +41,8 @@ import org.apache.commons.codec.binary.Base64;
  * </ol>
  */
 public class WXBizMsgCrypt {
+	private static final Logger log = LoggerFactory.getLogger(WXBizMsgCrypt.class);
+
 	static Charset CHARSET = Charset.forName("utf-8");
 	Base64 base64 = new Base64();
 	byte[] aesKey;
@@ -220,7 +224,7 @@ public class WXBizMsgCrypt {
 
 		String signature = SHA1.getSHA1(token, timeStamp, nonce, encrypt);
 
-		// System.out.println("发送给平台的签名是: " + signature[1].toString());
+		log.debug("发送给平台的签名是: " + signature.toString());
 		// 生成发送的xml
 		String result = XMLParse.generate(encrypt, signature, timeStamp, nonce);
 		return result;
@@ -253,8 +257,8 @@ public class WXBizMsgCrypt {
 		String signature = SHA1.getSHA1(token, timeStamp, nonce, encrypt[1].toString());
 
 		// 和URL中的签名比较是否相等
-		// System.out.println("第三方收到URL中的签名：" + msg_sign);
-		// System.out.println("第三方校验签名：" + signature);
+		log.debug("第三方收到URL中的签名：" + msgSignature);
+		log.debug("第三方校验签名：" + signature);
 		if (!signature.equals(msgSignature)) {
 			throw new AesException(AesException.ValidateSignatureError);
 		}

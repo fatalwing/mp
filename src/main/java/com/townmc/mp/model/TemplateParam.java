@@ -7,6 +7,10 @@ public class TemplateParam implements Serializable {
 	private String key; //参数名称
 	private String value; //参数值
 	private String color; //参数颜色
+
+	public TemplateParam() {
+
+	}
 	
 	public TemplateParam(String key, String value, String color) {
 		this.key = key;
