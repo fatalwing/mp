@@ -326,11 +326,15 @@ public class Wxapp {
         param.put("page", page);
         param.put("form_id", formId);
         Map<String, Object> data = new HashMap<String, Object>();
-        params.forEach((key, value) -> {
+
+        for(Map.Entry<String, Object> entry : param.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             Map<String, Object> field = new HashMap<String, Object>();
             field.put("value", value);
             data.put(key, field);
-        });
+        }
+
         param.put("data", data);
         param.put("emphasis_keyword", emphasisKeyword);
 
