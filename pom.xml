@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.townmc</groupId>
-	<artifactId>mp</artifactId>
+	<artifactId>townmc-mp</artifactId>
 	<version>3.23</version>
 	<packaging>jar</packaging>
 
-	<name>mp</name>
+	<name>townmc-mp</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -101,7 +101,7 @@
 			<version>2.06</version>
 		</dependency>
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>maven-diankayi-net</id>
