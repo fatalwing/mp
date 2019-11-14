@@ -4,7 +4,7 @@
 
 	<groupId>com.townmc</groupId>
 	<artifactId>townmc-mp</artifactId>
-	<version>3.23</version>
+	<version>3.25</version>
 	<packaging>jar</packaging>
 
 	<name>townmc-mp</name>
@@ -97,37 +97,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.townmc</groupId>
-			<artifactId>utils</artifactId>
-			<version>2.06</version>
+			<artifactId>townmc-utils</artifactId>
+			<version>3.4</version>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>maven-diankayi-net</id>
-			<name>Maven Diankayi Mirror</name>
-			<url>http://59.110.6.168:8081/repository/maven-public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>maven-diankayi-net</id>
-			<name>Maven Diankayi Mirror</name>
-			<url>http://59.110.6.168:8081/repository/maven-public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<build>
 		<plugins>
@@ -162,15 +135,26 @@
 
 	<distributionManagement>
 		<repository>
-			<id>maven-private</id>
-			<name>maven-private</name>
-			<url>http://59.110.6.168:8081/repository/maven-private/</url>
+			<id>rdc-releases</id>
+			<name>rdc-releases</name>
+			<url>https://repo.rdc.aliyun.com/repository/105179-release-2PXmgC/</url>
 		</repository>
 		<snapshotRepository>
-			<id>maven-private</id>
-			<name>maven-private</name>
-			<url>http://59.110.6.168:8081/repository/maven-private/</url>
+			<id>rdc-snapshots</id>
+			<name>rdc-snapshots</name>
+			<url>https://repo.rdc.aliyun.com/repository/105179-snapshot-iArDoI/</url>
 		</snapshotRepository>
-
 	</distributionManagement>
+<!--
+	<distributionManagement>
+		<repository>
+			<id>oss-releases</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+		<snapshotRepository>
+			<id>oss-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+-->
 </project>

@@ -14,6 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +112,7 @@ public class Component {
                 .put("component_verify_ticket", componentVerifyTicket);
 
         Http http = new Http();
-        String re = http.post(COMPONENT_ACCESS_TOKEN_URL, paramJson.toString());
+        String re = http.post(COMPONENT_ACCESS_TOKEN_URL, paramJson.toString()).toString();
         http.close();
         log.debug("==== apiComponentToken response : " + re);
         JSONObject reJson = new JSONObject(re);
@@ -138,7 +139,8 @@ public class Component {
 
         String url = MessageFormat.format(PRE_AUTH_CODE_URL, componentAccessToken);
         Http http = new Http();
-        String re = http.post(url, paramJson.toString());
+        String re = http.post(url, paramJson.toString()).toString();
+
         http.close();
         log.debug("==== apiCreatePreAuthcode response : " + re);
         JSONObject reJson = new JSONObject(re);
@@ -172,7 +174,8 @@ public class Component {
 
         String url = MessageFormat.format(API_QUERY_AUTH_URL, componentAccessToken);
         Http http = new Http();
-        String re = http.post(url, paramJson.toString());
+        String re = http.post(url, paramJson.toString()).toString();
+
         http.close();
         log.debug("==== apiQueryAuth response : " + re);
         JSONObject reJson = new JSONObject(re);
@@ -230,7 +233,8 @@ public class Component {
 
         String url = MessageFormat.format(API_AUTHORIZER_TOKEN_URL, componentAccessToken);
         Http http = new Http();
-        String re = http.post(url, paramJson.toString());
+        String re = http.post(url, paramJson.toString()).toString();
+
         http.close();
         log.debug("==== apiAuthorizerToken response : " + re);
         JSONObject reJson = new JSONObject(re);
@@ -263,7 +267,8 @@ public class Component {
 
         String url = MessageFormat.format(GET_ACCESSTOKEN_BY_CODE_URL, authorizerAppid, code, componentAppid, componentAccessToken);
         Http http = new Http();
-        String re = http.get(url);
+        String re = http.get(url).toString();
+
         http.close();
         log.debug("==== getAccessTokenByCode response : " + re);
         JSONObject reJson = new JSONObject(re);
@@ -300,7 +305,8 @@ public class Component {
 
         String url = MessageFormat.format(JSCODE2SESSION_URL, authorizerAppid, code, componentAppid, componentAccessToken);
         Http http = new Http();
-        String re = http.get(url);
+        String re = http.get(url).toString();
+
         http.close();
         log.debug("==== jscode2session response : " + re);
         JSONObject reJson = new JSONObject(re);
@@ -335,10 +341,11 @@ public class Component {
         param.put("authorizer_appid", authorizerAppid);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
-        log.debug("==== apiGetAuthorizerInfo response : " + resp);
+        String re = http.post(url, JsonUtil.object2Json(param)).toString();
 
-        return JsonUtil.json2Object(resp, Map.class);
+        log.debug("==== apiGetAuthorizerInfo response : " + re);
+
+        return JsonUtil.json2Object(re, Map.class);
     }
 
 }

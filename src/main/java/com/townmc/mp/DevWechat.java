@@ -37,7 +37,7 @@ public class DevWechat extends DefaultWechat implements Wechat {
         // 如果token超过定义的刷新的时间了，重新获取
         if(null == token || null == token.getAccessToken() || "".equals(token.getAccessToken()) ||
                 token.getExpireTime().getTime() - System.currentTimeMillis() < 360000) {
-            Map<String, String> params = new HashMap<String, String>();
+            Map<String, Object> params = new HashMap<String, Object>();
             params.put("grant_type", "client_credential");
             params.put("appid", this.appid.trim());
             params.put("secret", this.secret.trim());
@@ -45,7 +45,8 @@ public class DevWechat extends DefaultWechat implements Wechat {
             log.debug("get access token form weixin. appid:" + this.appid + ". secret:" + this.secret);
 
             Http http = new Http();
-            String responseStr = http.get(GET_TOKEN, params);
+            String responseStr = http.get(GET_TOKEN, params).toString();
+
             http.close();
 
             if (responseStr == null || "".equals(responseStr)) {
@@ -83,14 +84,14 @@ public class DevWechat extends DefaultWechat implements Wechat {
         if(null == code) {
             throw new MpException("parameter code is null!");
         }
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("appid", this.appid.trim());
         params.put("secret", this.secret.trim());
         params.put("code", code);
         params.put("grant_type", "authorization_code");
 
         Http http = new Http();
-        String responseStr = http.get(GET_OPENID_BY_CODE, params);
+        String responseStr = http.get(GET_OPENID_BY_CODE, params).toString();
 
         JSONObject json = new JSONObject(responseStr);
 

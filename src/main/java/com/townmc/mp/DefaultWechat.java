@@ -71,11 +71,11 @@ abstract class DefaultWechat {
 		http.post(SEND_MSG + "?access_token=" + this.getAccessToken(), json.toString());
 		http.close();
 	}
-	
+
 	public void sendMpNewsMsg(List<String> openids, String mediaId) {
 		this.sendNewsAdvanced(openids, mediaId);
 	}
-	
+
 	public void sendMpNewsMsg(List<String> openids, String mediaId,String type) {
 		this.sendNewsAdvancedByType(openids, mediaId, type);
 	}
@@ -96,7 +96,7 @@ abstract class DefaultWechat {
 		if(null == mediaId) {
 			throw new MpException("parameter mediaId is null!");
 		}
-		
+
 		JSONObject json = new JSONObject().put("touser", openid).put("msgtype", mediaType.toString()).put(mediaType.toString(), new JSONObject().put("media_id", mediaId));
 
 		Http http = new Http();
@@ -117,20 +117,20 @@ abstract class DefaultWechat {
 		if(null == news || news.size() == 0) {
 			throw new MpException("parameter news is null!");
 		}
-		
+
 		JSONArray arr = new JSONArray();
 		for(int i = 0; i < news.size(); i++) {
 			Article art = news.get(i);
-			arr.put(i, new JSONObject().put("title", art.getTitle()).put("description", 
+			arr.put(i, new JSONObject().put("title", art.getTitle()).put("description",
 					art.getDescription()).put("url", art.getUrl()).put("picurl", art.getPicurl()));
 		}
-		
+
 		JSONObject json = new JSONObject().put("touser", openid).put("msgtype", "news").put("news", new JSONObject().put("articles", arr));
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
 		http.post(SEND_MSG + "?access_token=" + this.getAccessToken(), json.toString());
-		
+
 	}
 
 	/**
@@ -142,13 +142,14 @@ abstract class DefaultWechat {
 		if(null == openid) {
 			throw new MpException("parameter openid is null!");
 		}
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("access_token", this.getAccessToken());
 		params.put("openid", openid);
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String responseStr = http.get(GET_USER_INFO, params);
+		String responseStr = http.get(GET_USER_INFO, params).toString();
+
 		http.close();
 
 		JSONObject json = new JSONObject(responseStr);
@@ -183,28 +184,29 @@ abstract class DefaultWechat {
 	 * @return
 	 */
 	public MpUserList getUserList(String nextOpenid) {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("access_token", this.getAccessToken());
 		if(null != nextOpenid) {
 			params.put("next_openid", nextOpenid);
 		}
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String responseStr = http.get(GET_USER_LIST, params);
+		String responseStr = http.get(GET_USER_LIST, params).toString();
+
 
 		JSONObject json = new JSONObject(responseStr);
-		
+
 		if(!json.isNull("errcode") && 0 != json.getInt("errcode")) {
 			throw new MpException("get user info error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
 		}
-		
+
 		MpUserList list = new MpUserList();
 		list.setTotal(json.getInt("total"));
 		list.setCount(json.getInt("count"));
 		list.setNextOpenid(json.getString("next_openid"));
 		JSONObject data = json.getJSONObject("data");
 		JSONArray arr = data.getJSONArray("openid");
-		
+
 		List<String> openids = new ArrayList<String>();
 		for(int i = 0; i < arr.length(); i++) {
 			openids.add(arr.getString(i));
@@ -217,12 +219,13 @@ abstract class DefaultWechat {
 		if(null == menus || menus.size() == 0) {
 			throw new MpException("parameter menus is null!");
 		}
-		
+
 		JSONObject body = new JSONObject().put("button", new JSONArray(menus));
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String response = http.post(CREATE_MENU + "?access_token=" + this.getAccessToken(), body.toString());
+		String response = http.post(CREATE_MENU + "?access_token=" + this.getAccessToken(), body.toString()).toString();
+
 		http.close();
 
 		JSONObject json = new JSONObject(response);
@@ -230,27 +233,27 @@ abstract class DefaultWechat {
 			throw new MpException("create menu error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
 		}
 	}
-	
+
 	public List<Menu> getMenu() {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("access_token", this.getAccessToken());
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String responseStr = http.get(GET_MENU, params);
+		String responseStr = http.get(GET_MENU, params).toString();
 
 		JSONObject json = new JSONObject(responseStr);
-		
+
 		if(!json.isNull("errcode") && 0 != json.getInt("errcode")) {
 			throw new MpException("get menu error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
 		}
-		
+
 		JSONObject menu = json.getJSONObject("menu");
 		JSONArray button = menu.getJSONArray("button");
-		
+
 		return this.parserMenu(button);
 	}
-	
+
 	private List<Menu> parserMenu(JSONArray arr) {
 		List<Menu> result = new ArrayList<Menu>();
 		for(int i = 0; i < arr.length(); i++) {
@@ -276,18 +279,19 @@ abstract class DefaultWechat {
 		}
 		return result;
 	}
-	
+
 	public void deleteMenu() {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("access_token", this.getAccessToken());
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String responseStr = http.get(DELETE_MENU, params);
+		String responseStr = http.get(DELETE_MENU, params).toString();
+
 		http.close();
 
 		JSONObject json = new JSONObject(responseStr);
-		
+
 		if(!json.isNull("errcode") && 0 != json.getInt("errcode")) {
 			throw new MpException("delete menu error! reson: " + json.getInt("errcode") + ". " + json.getString("errmsg"));
 		}
@@ -479,8 +483,10 @@ abstract class DefaultWechat {
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.uploadFile(url, "media", file);
-		
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("media", file);
+		String re = http.post(url, param, true).toString();
+
 		if(null != re) {
 			JSONObject json = new JSONObject(re);
 			if(!json.isNull("errcode") && 0 != json.getInt("errcode")) {
@@ -495,7 +501,7 @@ abstract class DefaultWechat {
 			throw new MpException("upload media error!");
 		}
 	}
-	
+
 	public String uploadNews(List<AdvancedArticle> articles) {
 		JSONArray arr = new JSONArray();
 		for(int i = 0; i < articles.size(); i++) {
@@ -506,12 +512,13 @@ abstract class DefaultWechat {
 					.put("content", art.getContent()).put("digest", art.getDigest())
 					.put("show_cover_pic", art.getShowCoverPic()));
 		}
-		
+
 		JSONObject json = new JSONObject().put("articles", arr);
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(UPLOAD_NEWS + "?access_token=" + this.getAccessToken(), json.toString());
+		String re = http.post(UPLOAD_NEWS + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -523,13 +530,13 @@ abstract class DefaultWechat {
 		} else {
 			throw new MpException("upload news error!");
 		}
-		
+
 	}
-	
+
 	public void sendNewsAdvanced(List<String> openids, String mediaId) {
 		this.sendNewsAdvancedByType(openids, mediaId, "mpnews");
 	}
-	
+
 	public void sendNewsAdvancedByType(List<String> openids, String mediaId,String type) {
 		JSONArray arr = new JSONArray();
 		for(int i = 0; i < openids.size(); i++) {
@@ -547,7 +554,8 @@ abstract class DefaultWechat {
 		}
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(SEND_MEDIA_ADVANCED + "?access_token=" + this.getAccessToken(), json.toString());
+		String re = http.post(SEND_MEDIA_ADVANCED + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -559,19 +567,20 @@ abstract class DefaultWechat {
 			throw new MpException("send News Advanced error!");
 		}
 	}
-	
+
 	/**
 	 * 创建参数的永久二维码
 	 * @param sceneId 场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
 	 * @return
 	 */
 	public String createQrCode(int sceneId) {
-		
+
 		JSONObject json = new JSONObject().put("action_name", "QR_LIMIT_SCENE").put("action_info", new JSONObject().put("scene", new JSONObject().put("scene_id", sceneId)));
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
+		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -596,7 +605,8 @@ abstract class DefaultWechat {
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
+		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -609,7 +619,7 @@ abstract class DefaultWechat {
 			throw new MpException("upload news error!");
 		}
 	}
-	
+
 	/**
 	 * 创建带参数的临时性二维码
 	 * @param sceneId 场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
@@ -621,7 +631,8 @@ abstract class DefaultWechat {
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
+		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -646,7 +657,8 @@ abstract class DefaultWechat {
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString());
+		String re = http.post(CREATE_QRCODE + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -659,7 +671,7 @@ abstract class DefaultWechat {
 			throw new MpException("upload news error!");
 		}
 	}
-	
+
 	/**
 	 * 通过ticket获得二维码
 	 * @param ticket
@@ -675,7 +687,8 @@ abstract class DefaultWechat {
 		String url = MessageFormat.format(SEND_API_ADD_TEMPLATE, this.getAccessToken());
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(url, json.toString());
+		String re = http.post(url, json.toString()).toString();
+
 		http.close();
 
 		if(null != re) {
@@ -690,7 +703,7 @@ abstract class DefaultWechat {
 	}
 
 	/**
-	 * 
+	 *
 	 * 给某个用户发送模版消息
 	 * @param openid 消息接收者的openid
 	 * @param templateId
@@ -716,13 +729,14 @@ abstract class DefaultWechat {
 							(color == null) ? "#173177" : color));
 
 		}
-		
+
 		JSONObject json = new JSONObject().put("touser", openid).put("template_id", templateId).put("url", jumpUrl).put("topcolor", "#FF0000").put("data", dataObj);
 		log.debug(json.toString());
 
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String result = http.post(SEND_TEMPLATE_MSG + "?access_token=" + this.getAccessToken(), json.toString());
+		String result = http.post(SEND_TEMPLATE_MSG + "?access_token=" + this.getAccessToken(), json.toString()).toString();
+
 		http.close();
 		if (null != result) {
 			JSONObject reJson = new JSONObject(result);
@@ -768,7 +782,7 @@ abstract class DefaultWechat {
 		String accessToken = this.getAccessToken();
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(PAY_UNIFIEDORDER + "?access_token=" + accessToken, payStr);
+		String re = http.post(PAY_UNIFIEDORDER + "?access_token=" + accessToken, payStr).toString();
 
 		if(null != re) {
 			Map<String, Object> reMap = MpUtils.parse(re);
@@ -810,11 +824,12 @@ abstract class DefaultWechat {
 
 			Http http = new Http();
 			http.setTimeout(3000, 3000, 3000);
-			String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi");
+			String re = http.get(JSAPI_TICKET+ "?access_token=" + this.getAccessToken() +"&type=jsapi").toString();
+
 			if (null != re) {
 				JSONObject reJson = new JSONObject(re);
 				if (!reJson.isNull("errcode") && 0 != reJson.getInt("errcode")) {
-					throw new MpException("send trmplate msg error! reson: "
+					throw new MpException("getJsApiTicket error! reson: "
 							+ reJson.getInt("errcode") + ". "
 							+ reJson.getString("errmsg"));
 				}
@@ -828,7 +843,7 @@ abstract class DefaultWechat {
 
 				tokenManager.toStorage(token);
 			} else {
-				throw new MpException("send trmplate msg error!");
+				throw new MpException("getJsApiTicket error!");
 			}
 
 		}
@@ -896,13 +911,14 @@ abstract class DefaultWechat {
 		}
 		Http http = new Http();
 		http.setTimeout(3000, 3000, 3000);
-		String re = http.post(ORDER_QUERY+ "?access_token=" +this.getAccessToken(), orderStr);
+		String re = http.post(ORDER_QUERY+ "?access_token=" +this.getAccessToken(), orderStr).toString();
+
 		if(null != re) {
 			Map<String, Object> reMap = MpUtils.parse(re);
 			if(!"SUCCESS".equals(reMap.get("return_code"))){
-				throw new MpException("failed to get prepay_id!" + ". return_msg:" + reMap.get("return_msg"));
+				throw new MpException("failed to get queryOrder!" + ". return_msg:" + reMap.get("return_msg"));
 			}else if(!"SUCCESS".equals(reMap.get("result_code"))){
-				throw new MpException("failed to get prepay_id!" + ". err_code_des:" + reMap.get("err_code_des"));
+				throw new MpException("failed to get queryOrder!" + ". err_code_des:" + reMap.get("err_code_des"));
 			}
 			Map<String, Object> returnMap = new HashMap<String, Object>();
 			returnMap.put("return_code", reMap.get("return_code"));

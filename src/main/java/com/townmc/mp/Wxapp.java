@@ -4,6 +4,7 @@ import com.townmc.utils.Http;
 import com.townmc.utils.JsonUtil;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,8 @@ public class Wxapp {
         param.put("uploaddomain", uploaddomain);
         param.put("downloaddomain", downloaddomain);
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -72,7 +74,8 @@ public class Wxapp {
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("wechatid", wechatid);
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -87,7 +90,8 @@ public class Wxapp {
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("wechatid", wechatid);
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -110,7 +114,8 @@ public class Wxapp {
         param.put("user_version", userVersion);
         param.put("user_desc", userDesc);
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -132,7 +137,8 @@ public class Wxapp {
     public static Map<String, Object> getCategory(String authorizerAccessToken) {
         String url = MessageFormat.format(GET_CATEGORY_URL, authorizerAccessToken);
         Http http = new Http();
-        String resp = http.get(url);
+        String resp = http.get(url).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -144,7 +150,8 @@ public class Wxapp {
     public static Map<String, Object> getPage(String authorizerAccessToken) {
         String url = MessageFormat.format(GET_PAGE_URL, authorizerAccessToken);
         Http http = new Http();
-        String resp = http.get(url);
+        String resp = http.get(url).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -161,7 +168,8 @@ public class Wxapp {
         param.put("item_list", itemList);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -177,7 +185,8 @@ public class Wxapp {
         param.put("auditid", auditid);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -190,7 +199,8 @@ public class Wxapp {
         String url = MessageFormat.format(GET_LATEST_AUDITS_TATUS_URL, authorizerAccessToken);
 
         Http http = new Http();
-        String resp = http.get(url);
+        String resp = http.get(url).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -204,7 +214,8 @@ public class Wxapp {
         Map<String, Object> param = new HashMap<String, Object>();
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -220,7 +231,8 @@ public class Wxapp {
         param.put("action", action);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -245,7 +257,8 @@ public class Wxapp {
         param.put("count", count);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -274,7 +287,8 @@ public class Wxapp {
         param.put("id", tplId);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -297,7 +311,8 @@ public class Wxapp {
         param.put("keyword_id_list", keyIdList);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -339,7 +354,8 @@ public class Wxapp {
         param.put("emphasis_keyword", emphasisKeyword);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -369,7 +385,8 @@ public class Wxapp {
         param.put("count", count);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
@@ -389,7 +406,8 @@ public class Wxapp {
         param.put("template_id", tplMsgId);
 
         Http http = new Http();
-        String resp = http.post(url, JsonUtil.object2Json(param));
+        String resp = http.post(url, JsonUtil.object2Json(param)).toString();
+
         return JsonUtil.json2Object(resp, Map.class);
     }
 
