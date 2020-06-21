@@ -16,6 +16,7 @@ import java.util.Map;
  * https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1489144594_DhNoV&token=&lang=zh_CN
  */
 public class Wxapp {
+    public static final String JSCODE2SESSION_URL = "https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code";
     private static final String MODIFY_DOMAIN_URL = "https://api.weixin.qq.com/wxa/modify_domain?access_token={0}";
     private static final String BIND_TESTER_URL = "https://api.weixin.qq.com/wxa/bind_tester?access_token={0}";
     private static final String UNBIND_TESTER_URL = "https://api.weixin.qq.com/wxa/unbind_tester?access_token={0}";
@@ -34,6 +35,15 @@ public class Wxapp {
     private static final String LIST_EXISTS_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/list?access_token={0}"; //获取帐号下已存在的模板列表
     private static final String DEL_EXISTS_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/del?access_token={0}"; //删除帐号下的某个模板
     private static final String SEND_TEMPLATE_MSG_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={0}";
+
+    public static Map<String, Object> jscode2session(String appid, String secret, String jsCode) {
+        String url = MessageFormat.format(JSCODE2SESSION_URL, appid, secret, jsCode);
+
+        Http http = new Http();
+        String resp = http.get(url).toString();
+
+        return JsonUtil.json2Object(resp, Map.class);
+    }
 
     /**
      * 修改服务器地址
